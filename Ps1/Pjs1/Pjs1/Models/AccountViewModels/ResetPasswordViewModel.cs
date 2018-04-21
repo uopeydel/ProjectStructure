@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pjs1.Models.AccountViewModels
+namespace Pjs1.Main.Models.AccountViewModels
 {
     public class ResetPasswordViewModel
     {

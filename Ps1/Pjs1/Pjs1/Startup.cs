@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pjs1.Data;
-using Pjs1.Models;
-using Pjs1.Services;
+using Pjs1.Main.Data;
+using Pjs1.Main.Models;
+using Pjs1.Main.Services;
 
-namespace Pjs1
+namespace Pjs1.Main
 {
     public class Startup
     {

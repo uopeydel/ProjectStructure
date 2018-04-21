@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pjs1.Services
+namespace Pjs1.Main.Services
 {
     public interface IEmailSender
     {

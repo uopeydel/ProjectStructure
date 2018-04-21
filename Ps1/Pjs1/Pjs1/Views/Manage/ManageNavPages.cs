@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace Pjs1.Views.Manage
+namespace Pjs1.Main.Views.Manage
 {
     public static class ManageNavPages
     {

@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pjs1.Models;
+using Pjs1.Main.Models;
 
-namespace Pjs1.Controllers
+namespace Pjs1.Main.Controllers
 {
     public class HomeController : Controller
     {

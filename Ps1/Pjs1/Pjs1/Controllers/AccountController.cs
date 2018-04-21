@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Pjs1.Models;
-using Pjs1.Models.AccountViewModels;
-using Pjs1.Services;
+using Pjs1.Main.Models;
+using Pjs1.Main.Models.AccountViewModels;
+using Pjs1.Main.Services;
 
-namespace Pjs1.Controllers
+namespace Pjs1.Main.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]

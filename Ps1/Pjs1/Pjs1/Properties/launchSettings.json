@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Pjs1": {
+    "Pjs1.Main": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

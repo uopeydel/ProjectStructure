@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Pjs1.Services;
+using Pjs1.Main.Services;
 
-namespace Pjs1.Services
+namespace Pjs1.Main.Services
 {
     public static class EmailSenderExtensions
     {

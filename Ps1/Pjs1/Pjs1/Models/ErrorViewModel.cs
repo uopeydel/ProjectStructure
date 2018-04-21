@@ -1,6 +1,6 @@
 using System;
 
-namespace Pjs1.Models
+namespace Pjs1.Main.Models
 {
     public class ErrorViewModel
     {

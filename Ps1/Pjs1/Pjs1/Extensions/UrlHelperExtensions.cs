@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Pjs1.Controllers;
+using Pjs1.Main.Controllers;
 
 namespace Microsoft.AspNetCore.Mvc
 {

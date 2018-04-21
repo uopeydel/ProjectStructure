@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Pjs1.Models;
-using Pjs1.Models.ManageViewModels;
-using Pjs1.Services;
+using Pjs1.Main.Models;
+using Pjs1.Main.Models.ManageViewModels;
+using Pjs1.Main.Services;
 
-namespace Pjs1.Controllers
+namespace Pjs1.Main.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
@@ -522,7 +522,7 @@ namespace Pjs1.Controllers
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Pjs1"),
+                _urlEncoder.Encode("Pjs1.Main"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }

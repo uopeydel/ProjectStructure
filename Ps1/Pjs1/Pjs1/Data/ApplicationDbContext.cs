@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Pjs1.Models;
+using Pjs1.Main.Models;
 
-namespace Pjs1.Data
+namespace Pjs1.Main.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
