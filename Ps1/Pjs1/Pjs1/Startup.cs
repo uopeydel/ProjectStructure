@@ -11,31 +11,39 @@ using Microsoft.Extensions.DependencyInjection;
 using Pjs1.Main.Data;
 using Pjs1.Main.Models;
 using Pjs1.Main.Services;
+using Pjs1.Common.DAL;
 
 namespace Pjs1.Main
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            _env = env;
             Configuration = configuration;
         }
 
+        private readonly IHostingEnvironment _env;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add-Migration CreateMigrationAgentAuth -Context ApplicationDbContext
+            // Update-Database CreateMigrationAgentAuth -Context ApplicationDbContext
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("AuthConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddDbContext<Postgre1DbContext>(options =>
+                // This line for UseNpgsql add Can add migration
+                options.UseNpgsql(Configuration.GetConnectionString("Db1Connection"))
+            );
 
+            services.AddIoc(Configuration, _env);
             services.AddMvc();
         }
 

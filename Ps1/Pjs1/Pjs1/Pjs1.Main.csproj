@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Pjs1.BLL\Pjs1.BLL.csproj" />
     <ProjectReference Include="..\Pjs1.Common\Pjs1.Common.csproj" />
+    <ProjectReference Include="..\Pjs1.DAL.PostgreSQL\Pjs1.DAL.PostgreSQL.csproj" />
   </ItemGroup>
 
 </Project>
