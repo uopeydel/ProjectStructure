@@ -40,35 +40,70 @@ namespace Pjs1.DAL.PostgreSQL.Implementations
             DbContext.Set<T>().RemoveRange(entity);
         }
 
-        public virtual IQueryable<T> GetAll()
+        public virtual IQueryable<T> GetAll(bool tracking = true)
         {
-            return DbContext.Set<T>().AsQueryable();
+            if (tracking)
+            {
+                return DbContext.Set<T>().AsQueryable();
+            }
+            else
+            {
+                return DbContext.Set<T>().AsNoTracking().AsQueryable();
+            }
         }
 
-        public virtual IQueryable<T> GetAll(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> GetAll(Expression<Func<T, bool>> predicate, bool tracking = true)
         {
-            return DbContext.Set<T>().Where(predicate).AsQueryable();
+            if (tracking)
+            {
+                return DbContext.Set<T>().Where(predicate).AsQueryable();
+            }
+            else
+            {
+                return DbContext.Set<T>().AsNoTracking().Where(predicate).AsQueryable();
+            }
         }
 
-        public IQueryable<T> GetAll(params Expression<Func<T, object>>[] includeProperties)
+        public IQueryable<T> GetAll(bool tracking = true, params Expression<Func<T, object>>[] includeProperties)
         {
+
             IQueryable<T> query = DbContext.Set<T>();
             query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-            return query.AsQueryable();
+            if (tracking)
+            {
+                return query.AsQueryable();
+            }
+            else
+            {
+                return query.AsNoTracking().AsQueryable();
+            }
         }
 
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate)
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, bool tracking = true)
         {
-            return await DbContext.Set<T>().FirstOrDefaultAsync(predicate);
+            if (tracking)
+            {
+                return await DbContext.Set<T>().FirstOrDefaultAsync(predicate);
+            }
+            else
+            {
+                return await DbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
+            }
         }
 
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate,
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, bool tracking = true,
             params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = DbContext.Set<T>();
             query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-
-            return await query.Where(predicate).FirstOrDefaultAsync();
+            if (tracking)
+            {
+                return await query.Where(predicate).FirstOrDefaultAsync();
+            }
+            else
+            {
+                return await query.Where(predicate).AsNoTracking().FirstOrDefaultAsync();
+            }
         }
 
         public async Task<T> AddAsync(T entity)
@@ -88,6 +123,8 @@ namespace Pjs1.DAL.PostgreSQL.Implementations
         {
             DbContext.Entry(entity).State = EntityState.Modified;
         }
+
+
 
         public int SaveChanges()
         {

@@ -9,13 +9,13 @@ namespace Pjs1.DAL.PostgreSQL.Interfaces
 {
     public interface IEntityFrameworkRepository<T, TContext> where T : class where TContext : DbContext
     {
-        IQueryable<T> GetAll();
-        IQueryable<T> GetAll(params Expression<Func<T, object>>[] includeProperties);
-        IQueryable<T> GetAll(Expression<Func<T, bool>> predicate);
+        IQueryable<T> GetAll(bool tracking = true);
+        IQueryable<T> GetAll(bool tracking = true, params Expression<Func<T, object>>[] includeProperties);
+        IQueryable<T> GetAll(Expression<Func<T, bool>> predicate, bool tracking = true);
 
-        Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate);
+        Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, bool tracking = true);
 
-        Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate,
+        Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, bool tracking = true,
             params Expression<Func<T, object>>[] includeProperties);
 
         Task<T> AddAsync(T entity);
