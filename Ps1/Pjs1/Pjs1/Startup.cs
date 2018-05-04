@@ -12,6 +12,8 @@ using Pjs1.Main.Data;
 using Pjs1.Main.Models;
 using Pjs1.Main.Services;
 using Pjs1.Common.DAL;
+using Pjs1.Main.PubSub;
+using Pjs1.Main.PubSubHub;
 
 namespace Pjs1.Main
 {
@@ -60,6 +62,41 @@ namespace Pjs1.Main
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
+
+
+
+            #region UseWebSocketsOptions
+            //var webSocketOptions = new WebSocketOptions()
+            //{
+            //    KeepAliveInterval = TimeSpan.FromSeconds(120),
+            //    ReceiveBufferSize = 4 * 1024
+            //};
+             
+            app.UseWebSockets(/*webSocketOptions*/);
+            #endregion
+            #region UsePubSubProvider
+            try
+            {
+                app.UsePubSubProvider(conf =>
+                {
+                    conf.MapChannel<Chanel1Hub>("Chanel1HubSlug");
+                });
+            }
+            catch (Exception e)
+            {
+                var a = e;  
+            }
+            #endregion
+
+
+
+
+
+
+
+
 
             app.UseStaticFiles();
 
