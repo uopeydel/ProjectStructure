@@ -43,8 +43,10 @@ namespace Pjs1.Main.PubSub.Process
 
                     // var typeVar = Type.GetType("SignalService.MyTestHub");
                     // TODO : "InvokeMethod
-                    InvokeProcess.InvokeMethod(userConnectionData, receiveDataModel);
-
+                    var invokeResult = InvokeProcess.InvokeMethod(userConnectionData, receiveDataModel);
+                    //TODO : get this varaible [invokeResult] type  check before SendString()  // //  // Convert.ChangeType(mainValue, mainMethod.ReturnType) ;
+                    var invokeResultString = invokeResult.ToString();
+                    await SendString(webSocket, invokeResultString, CancellationToken.None);
                     // --//
                 }
                 //await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
@@ -54,9 +56,16 @@ namespace Pjs1.Main.PubSub.Process
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
 
+        private static Task SendString(WebSocket ws, string data, CancellationToken cancellation)
+        {
+            var encoded = Encoding.UTF8.GetBytes(data);
+            var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
+            return ws.SendAsync(buffer, WebSocketMessageType.Text, true, cancellation);
+        }
+
         private class InvokeProcess
         {
-            public static void InvokeMethod(ConnectionSocketDataModel userConnectionData, ReceiveSocketDataModel receiveDataModel)
+            public static object InvokeMethod(ConnectionSocketDataModel userConnectionData, ReceiveSocketDataModel receiveDataModel)
             {
                 try
                 {
@@ -67,14 +76,17 @@ namespace Pjs1.Main.PubSub.Process
                     var mainConstructor = mainTypeData.GetConstructors().FirstOrDefault();
                     var mainConstructorDeclare = mainConstructor.Invoke(mainParamConstructor);
                     var mainMethod = mainTypeData.GetMethod(receiveDataModel.InvokeMethodName);
-                    //todo get return type of mainMethod
+
+
                     var mainValue = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
-                    //todo return mainValue and send to  InvokeProcess.InvokeMethod for use   await webSocket.SendAsync
+
+                    return mainValue;
+
                 }
                 catch (Exception e)
                 {
-                    //TODO : log
-                    var a = e;
+                    //TODO : log 
+                    return e;
                 }
             }
 
