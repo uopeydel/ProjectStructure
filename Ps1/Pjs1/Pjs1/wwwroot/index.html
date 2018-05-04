@@ -36,6 +36,7 @@
         <label for="sendMessage">Message to send:</label>
         <input id="sendMessage" disabled />
         <button id="sendButton" type="submit" disabled>Send</button>
+        <button id="sendButtonAsync" type="submit" disabled>Send Async</button>
         <button id="closeButton" disabled>Close Socket</button>
     </div>
 
@@ -58,6 +59,7 @@
         var stateLabel = document.getElementById("stateLabel");
         var sendMessage = document.getElementById("sendMessage");
         var sendButton = document.getElementById("sendButton");
+        var sendButtonAsync = document.getElementById("sendButtonAsync");
         var sendForm = document.getElementById("sendForm");
         var commsLog = document.getElementById("commsLog");
         var closeButton = document.getElementById("closeButton");
@@ -70,11 +72,13 @@
             function disable() {
                 sendMessage.disabled = true;
                 sendButton.disabled = true;
+                sendButtonAsync.disabled = true;
                 closeButton.disabled = true;
             }
             function enable() {
                 sendMessage.disabled = false;
                 sendButton.disabled = false;
+                sendButtonAsync.disabled = false;
                 closeButton.disabled = false;
             }
             connectionUrl.disabled = true;
@@ -119,6 +123,17 @@
                 alert("socket not connected");
             }
             var data = "{ MessageJson : [ '" + sendMessage.value + "' , 1 ] , InvokeMethodName: 'Read'  }";
+            socket.send(data);
+            commsLog.innerHTML += '<tr>' +
+                '<td class="commslog-client">Client</td>' +
+                '<td class="commslog-server">Server</td>' +
+                '<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
+        }
+        sendButtonAsync.onclick = function () {
+            if (!socket || socket.readyState != WebSocket.OPEN) {
+                alert("socket not connected");
+            }
+            var data = "{ MessageJson : [ '" + sendMessage.value + "' , 1 ] , InvokeMethodName: 'ReadAsync'  }";
             socket.send(data);
             commsLog.innerHTML += '<tr>' +
                 '<td class="commslog-client">Client</td>' +

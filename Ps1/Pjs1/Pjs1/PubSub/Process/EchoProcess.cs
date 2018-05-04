@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +45,7 @@ namespace Pjs1.Main.PubSub.Process
 
                     // var typeVar = Type.GetType("SignalService.MyTestHub");
                     // TODO : "InvokeMethod
-                    var invokeResult = InvokeProcess.InvokeMethod(userConnectionData, receiveDataModel);
+                    var invokeResult = await InvokeProcess.InvokeMethod(userConnectionData, receiveDataModel);
                     //TODO : get this varaible [invokeResult] type  check before SendString()  // //  // Convert.ChangeType(mainValue, mainMethod.ReturnType) ;
                     var invokeResultString = invokeResult.ToString();
                     await SendString(webSocket, invokeResultString, CancellationToken.None);
@@ -65,7 +67,14 @@ namespace Pjs1.Main.PubSub.Process
 
         private class InvokeProcess
         {
-            public static object InvokeMethod(ConnectionSocketDataModel userConnectionData, ReceiveSocketDataModel receiveDataModel)
+            private static bool IsAsyncMethod(MethodInfo method, string methodName)
+            {
+                Type attType = typeof(AsyncStateMachineAttribute);
+                var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
+                return (attrib != null);
+            }
+
+            public static async Task<object> InvokeMethod(ConnectionSocketDataModel userConnectionData, ReceiveSocketDataModel receiveDataModel)
             {
                 try
                 {
@@ -77,10 +86,18 @@ namespace Pjs1.Main.PubSub.Process
                     var mainConstructorDeclare = mainConstructor.Invoke(mainParamConstructor);
                     var mainMethod = mainTypeData.GetMethod(receiveDataModel.InvokeMethodName);
 
-
-                    var mainValue = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
-
-                    return mainValue;
+                    var response = new object();
+                    if (IsAsyncMethod(mainMethod, receiveDataModel.InvokeMethodName))
+                    {
+                        // check invoke async
+                        dynamic invokeAsync = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
+                        response = await invokeAsync;
+                    }
+                    else
+                    {
+                        response = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
+                    }
+                    return response;
 
                 }
                 catch (Exception e)
