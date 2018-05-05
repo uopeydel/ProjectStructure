@@ -8,9 +8,15 @@ namespace Pjs1.Main.PubSub.Process
     {
         internal static void RegisWebSocket(ConnectionSocketDataModel regisData)
             => SetConnectionSocketList(regisData);
-        internal static List<ConnectionSocketDataModel> GetConnectionRegisList
+        internal static IEnumerable<ConnectionSocketDataModel> GetConnectionRegisList
             => GetConnectionSocketList();
+
+        internal static IEnumerable<ConnectionSocketDataModel> GetConnectionRegisListFromSlug(string slug)
+           => GetConnectionSocketListFromSlug(slug);
+
         internal static ConnectionSocketDataModel GetConnectionRegis(string ConnectionId, string ChannelSlugUrl)
             => GetConnectionSocket(ConnectionId, ChannelSlugUrl);
+
+
     }
 }

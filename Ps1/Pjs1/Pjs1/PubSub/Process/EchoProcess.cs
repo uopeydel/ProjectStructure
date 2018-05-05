@@ -23,14 +23,27 @@ namespace Pjs1.Main.PubSub.Process
             //regis user subscript websocket  Connection
             var userConnectionData =
                 RegisWebSocketProcess.GetConnectionRegis(connectionId, channelSlugUrl)
-                ??
-                new ConnectionSocketDataModel
+                ?? new ConnectionSocketDataModel
                 {
                     ChannelSlugUrl = channelSlugUrl,
                     ConnectionId = connectionId,
                     WebSocket = webSocket
                 };
 
+            #region Reply Connecttion Id
+            var replyConnectionData = new ReceiveSocketDataModel
+            {
+                ConnectionId = userConnectionData.ConnectionId,
+                ConnectionName = "",
+                MessageJson = new[] { "connection", "successful" },
+                InvokeMethodName = "InitialConnection"
+            };
+            await SendToWebSocket(webSocket, replyConnectionData, CancellationToken.None);
+            #endregion
+            SetConnectionSocketList(userConnectionData);
+
+
+            await FlushAllConnectionList(channelSlugUrl);
 
             var buffer = new byte[1024 * 4];
             var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
@@ -43,26 +56,67 @@ namespace Pjs1.Main.PubSub.Process
                     var content = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     var receiveDataModel = JsonConvert.DeserializeObject<ReceiveSocketDataModel>(content);
 
+                    #region UseWhenInvoke method and return data to client 
                     // var typeVar = Type.GetType("SignalService.MyTestHub");
                     // TODO : "InvokeMethod
                     var invokeResult = await InvokeProcess.InvokeMethod(userConnectionData, receiveDataModel);
                     //TODO : get this varaible [invokeResult] type  check before SendString()  // //  // Convert.ChangeType(mainValue, mainMethod.ReturnType) ;
-                    var invokeResultString = invokeResult.ToString();
-                    await SendString(webSocket, invokeResultString, CancellationToken.None);
+                    if (invokeResult != null)
+                    {
+                        var invokeResultString = invokeResult.ToString();
+                        var replySubscriptData = new ReceiveSocketDataModel
+                        {
+                            ConnectionId = receiveDataModel.ConnectionId,
+                            ConnectionName = receiveDataModel.ConnectionName,
+                            MessageJson = new[] { invokeResultString },
+                            InvokeMethodName = receiveDataModel.InvokeMethodName
+                        };
+                        await SendToWebSocket(webSocket, replySubscriptData, CancellationToken.None);
+                    }
                     // --//
+                    #endregion
                 }
                 //await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
 
                 result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+            RegisWebSocketProcess.RemoveConnectionSocket(userConnectionData.ConnectionId, channelSlugUrl);
+            await FlushAllConnectionList(channelSlugUrl);
         }
 
-        private static Task SendString(WebSocket ws, string data, CancellationToken cancellation)
+        private static async Task FlushAllConnectionList(string channelSlugUrl)
         {
-            var encoded = Encoding.UTF8.GetBytes(data);
+            #region FlushAllConnectionList
+            var allConnectionList = RegisWebSocketProcess.GetConnectionSocketListFromSlug(channelSlugUrl);
+            foreach (var connection in allConnectionList)
+            {
+                var FlushAllConnectionList = new ReceiveSocketDataModel
+                {
+                    ConnectionId = connection.ConnectionId,
+                    ConnectionName = "",
+                    MessageJson = new[] { JsonConvert.SerializeObject(allConnectionList.Select(s => s.ConnectionId)) },
+                    InvokeMethodName = "FlushAllConnectionList"
+                };
+                await SendToWebSocket(connection.WebSocket, FlushAllConnectionList, CancellationToken.None);
+            }
+            #endregion
+        }
+        private static Task SendToWebSocket(WebSocket ws, ReceiveSocketDataModel data, CancellationToken cancellation)
+        {
+            var dataJson = JsonConvert.SerializeObject(data);
+            var encoded = Encoding.UTF8.GetBytes(dataJson);
             var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
             return ws.SendAsync(buffer, WebSocketMessageType.Text, true, cancellation);
+        }
+
+        public static Task SendToConnectionId(string channelSlugUrl, ReceiveSocketDataModel receivedData, CancellationToken? cancellation = null)
+        {
+            var dataJson = JsonConvert.SerializeObject(receivedData);
+            var tarGetConnectionId = RegisWebSocketProcess.GetConnectionRegis(receivedData.ConnectionId, channelSlugUrl);
+            var encoded = Encoding.UTF8.GetBytes(dataJson);
+            var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
+            return tarGetConnectionId.WebSocket.SendAsync(buffer, WebSocketMessageType.Text, true, cancellation ?? CancellationToken.None);
         }
 
         private class InvokeProcess
@@ -86,16 +140,32 @@ namespace Pjs1.Main.PubSub.Process
                     var mainConstructorDeclare = mainConstructor.Invoke(mainParamConstructor);
                     var mainMethod = mainTypeData.GetMethod(receiveDataModel.InvokeMethodName);
 
-                    var response = new object();
+                    var IsNotReturn = (mainMethod.ReturnType == typeof(void) || mainMethod.ReturnType == typeof(Task));
+                    object response = null;
                     if (IsAsyncMethod(mainMethod, receiveDataModel.InvokeMethodName))
                     {
+
                         // check invoke async
                         dynamic invokeAsync = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
-                        response = await invokeAsync;
+                        if (IsNotReturn)
+                        {
+                            await invokeAsync;
+                        }
+                        else
+                        {
+                            response = await invokeAsync;
+                        }
                     }
                     else
                     {
-                        response = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
+                        if (IsNotReturn)
+                        {
+                            mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
+                        }
+                        else
+                        {
+                            response = mainMethod.Invoke(mainConstructorDeclare, receiveDataModel.MessageJson);
+                        }
                     }
                     return response;
 

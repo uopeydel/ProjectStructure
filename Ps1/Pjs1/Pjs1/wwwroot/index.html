@@ -23,51 +23,62 @@
         }
     </style>
 </head>
-<body>
-    <h1>WebSocket Sample Application</h1>
-    <p id="stateLabel">Ready to connect...</p>
-    <div>
-        <label for="connectionUrl">WebSocket Server URL:</label>
-        <input id="connectionUrl" />
-        <button id="connectButton" type="submit">Connect</button>
+<body style="background-color:gray">
+    <div id="connectionList" style="background-color:burlywood; height:100%;width:20%;border:1px solid #ccc;overflow:auto;padding-left:0px;margin-top:0;margin-bottom:0;">
+        <!-- for other connection id -->
     </div>
-    <p></p>
-    <div>
-        <label for="sendMessage">Message to send:</label>
-        <input id="sendMessage" disabled />
-        <button id="sendButton" type="submit" disabled>Send</button>
-        <button id="sendButtonAsync" type="submit" disabled>Send Async</button>
-        <button id="closeButton" disabled>Close Socket</button>
+    <div style="padding-left:20%;">
+        <h1>WebSocket Sample Application</h1>
+        <p id="stateLabel">Ready to connect...</p>
+        <div>
+            <label for="connectionUrl">WebSocket Server URL:</label>
+            <input id="connectionUrl" />
+            <button id="connectButton" type="submit">Connect</button>
+        </div>
+        <p></p>
+        <div>
+            <label for="sendMessage">Message to send:</label>
+            <input id="sendMessage" disabled />
+            <input id="sendMessageToIdButton" placeholder="IdReceived" />  <button id="sendToIdButton" type="submit"  >sendToId </button>
+            <button id="sendButton" type="submit" disabled>Send</button>
+
+            <button id="sendButtonAsync" type="submit" disabled>Send Async</button>
+            <button id="closeButton" disabled>Close Socket</button>
+        </div>
+
+        <h2>Communication Log</h2>
+        <table style="width: 800px">
+            <thead>
+                <tr>
+                    <td style="width: 100px">From</td>
+                    <td style="width: 100px">To</td>
+                    <td>Data</td>
+                </tr>
+            </thead>
+            <tbody id="commsLog"></tbody>
+        </table>
     </div>
-
-    <h2>Communication Log</h2>
-    <table style="width: 800px">
-        <thead>
-            <tr>
-                <td style="width: 100px">From</td>
-                <td style="width: 100px">To</td>
-                <td>Data</td>
-            </tr>
-        </thead>
-        <tbody id="commsLog"></tbody>
-    </table>
-
     <script>
+        var connectionId = "";
+        var sendMessageToId = "";
         var connectionForm = document.getElementById("connectionForm");
         var connectionUrl = document.getElementById("connectionUrl");
         var connectButton = document.getElementById("connectButton");
         var stateLabel = document.getElementById("stateLabel");
         var sendMessage = document.getElementById("sendMessage");
         var sendButton = document.getElementById("sendButton");
+        var sendMessageToIdButton = document.getElementById("sendMessageToIdButton");
         var sendButtonAsync = document.getElementById("sendButtonAsync");
+        var sendToIdButton = document.getElementById("sendToIdButton");
         var sendForm = document.getElementById("sendForm");
         var commsLog = document.getElementById("commsLog");
+        var connectionList = document.getElementById("connectionList");
         var closeButton = document.getElementById("closeButton");
         var socket;
         var scheme = document.location.protocol == "https:" ? "wss" : "ws";
         var port = document.location.port ? (":" + document.location.port) : "";
         let chanelHubName = "Chanel1HubSlug";
-        connectionUrl.value = scheme + "://" + document.location.hostname + port + "/" + chanelHubName ;
+        connectionUrl.value = scheme + "://" + document.location.hostname + port + "/" + chanelHubName;
         function updateState() {
             function disable() {
                 sendMessage.disabled = true;
@@ -118,49 +129,91 @@
             }
             socket.close(1000, "Closing from client");
         }
-        sendButton.onclick = function () {
+        sendToIdButton.onclick = function () {
             if (!socket || socket.readyState != WebSocket.OPEN) {
                 alert("socket not connected");
             }
-            var data = "{ MessageJson : [ '" + sendMessage.value + "' , 1 ] , InvokeMethodName: 'Read'  }";
+            sendMessageToId = sendMessageToIdButton.value;
+            var data = "{ MessageJson : [ '" + sendMessage.value + "' , '" + chanelHubName + "', '" + sendMessageToId + "' ] , InvokeMethodName: 'SendMessageToId' , ConnectionId : '" +
+                connectionId + "'  , ConnectionName : '" + 0 + "' }";
             socket.send(data);
             commsLog.innerHTML += '<tr>' +
                 '<td class="commslog-client">Client</td>' +
                 '<td class="commslog-server">Server</td>' +
-                '<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
+                '<td class="commslog-data">' + sendMessage.value + '</td></tr>';
+        }
+
+        sendButton.onclick = function () {
+            if (!socket || socket.readyState != WebSocket.OPEN) {
+                alert("socket not connected");
+            }
+            var data = "{ MessageJson : [ '" + sendMessage.value + "' , 1 ] , InvokeMethodName: 'Read' , ConnectionId : '" +
+                connectionId + "'  , ConnectionName : '" + 0 + "' }";
+            socket.send(data);
+            commsLog.innerHTML += '<tr>' +
+                '<td class="commslog-client">Client</td>' +
+                '<td class="commslog-server">Server</td>' +
+                '<td class="commslog-data">' + sendMessage.value + '</td></tr>';
         }
         sendButtonAsync.onclick = function () {
             if (!socket || socket.readyState != WebSocket.OPEN) {
                 alert("socket not connected");
             }
-            var data = "{ MessageJson : [ '" + sendMessage.value + "' , 1 ] , InvokeMethodName: 'ReadAsync'  }";
+            var data = "{ MessageJson : [ '" + sendMessage.value + "' , 1 ] , InvokeMethodName: 'ReadAsync' , ConnectionId : '" +
+                connectionId + "'  , ConnectionName : '" + 0 + "' }";
             socket.send(data);
             commsLog.innerHTML += '<tr>' +
                 '<td class="commslog-client">Client</td>' +
                 '<td class="commslog-server">Server</td>' +
-                '<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
+                '<td class="commslog-data">' + sendMessage.value + '</td></tr>';
         }
-        connectButton.onclick = function() {
+        connectButton.onclick = function () {
             stateLabel.innerHTML = "Connecting";
             socket = new WebSocket(connectionUrl.value);
             socket.onopen = function (event) {
                 updateState();
                 commsLog.innerHTML += '<tr>' +
                     '<td colspan="3" class="commslog-data">Connection opened</td>' +
-                '</tr>';
+                    '</tr>';
             };
             socket.onclose = function (event) {
                 updateState();
                 commsLog.innerHTML += '<tr>' +
-                    '<td colspan="3" class="commslog-data">Connection closed. Code: ' + htmlEscape(event.code) + '. Reason: ' + htmlEscape(event.reason) + '</td>' +
-                '</tr>';
+                    '<td colspan="3" class="commslog-data">Connection closed. Code: ' + event.code + '. Reason: ' + event.reason + '</td>' +
+                    '</tr>';
             };
             socket.onerror = updateState;
             socket.onmessage = function (event) {
+                let result = JSON.parse(event.data);
+                console.log(result, "onmessage");
+                let showSubscriptMessage = result.MessageJson;
+                if (result.InvokeMethodName == "InitialConnection") {
+                    connectionId = result.ConnectionId;
+                }
+                if (result.InvokeMethodName == "SendMessageToId") {
+                    showSubscriptMessage = " received from another " + showSubscriptMessage;
+                }
+                if (result.InvokeMethodName == "received") {
+
+
+                }
+                if (result.InvokeMethodName == "FlushAllConnectionList") {
+                    connectionList.innerHTML = '<ul>';
+                    var ar = JSON.parse(result.MessageJson[0])
+                    //console.log(ar, "ar")
+                    ar.forEach((con) => {
+                        //console.log(con)
+                        connectionList.innerHTML += '<ui > ' + con + '</ui>'
+                    });
+                    connectionList.innerHTML += '</ul>';
+                    showSubscriptMessage = "";
+                    return;
+                }
                 commsLog.innerHTML += '<tr>' +
                     '<td class="commslog-server">Server</td>' +
                     '<td class="commslog-client">Client</td>' +
-                    '<td class="commslog-data">' + htmlEscape(event.data) + '</td></tr>';
+                    '<td class="commslog-data">' + showSubscriptMessage + '</td></tr>';
+
             };
         };
         function htmlEscape(str) {

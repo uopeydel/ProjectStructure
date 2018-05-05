@@ -106,13 +106,24 @@ namespace Pjs1.Main.PubSub
             ConnectionSocketList.Add(regisData);
         }
 
-        protected static List<ConnectionSocketDataModel> GetConnectionSocketList()
+        protected static IEnumerable<ConnectionSocketDataModel> GetConnectionSocketList()
         {
             return ConnectionSocketList;
         }
+
+        protected static IEnumerable<ConnectionSocketDataModel> GetConnectionSocketListFromSlug(string slug)
+        {
+            return ConnectionSocketList.Where(w => w.ChannelSlugUrl.Equals(slug));
+        }
+
         protected static ConnectionSocketDataModel GetConnectionSocket(string ConnectionId, string ChannelSlugUrl)
         {
             return ConnectionSocketList.Where(w => w.ConnectionId == ConnectionId && w.ChannelSlugUrl == ChannelSlugUrl).FirstOrDefault();
+        }
+
+        protected static void RemoveConnectionSocket(string ConnectionId, string ChannelSlugUrl)
+        {
+            ConnectionSocketList.Remove(ConnectionSocketList.FirstOrDefault(w => w.ConnectionId == ConnectionId && w.ChannelSlugUrl == ChannelSlugUrl));
         }
         #endregion
     }
