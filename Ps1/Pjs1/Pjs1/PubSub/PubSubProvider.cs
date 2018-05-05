@@ -101,9 +101,16 @@ namespace Pjs1.Main.PubSub
 
         #region ConnectionSocketList
         private static readonly List<ConnectionSocketDataModel> ConnectionSocketList = new List<ConnectionSocketDataModel>();
-        protected static void SetConnectionSocketList(ConnectionSocketDataModel regisData)
+        protected static ConnectionSocketDataModel SetConnectionSocketList(string channelSlugUrl, string connectionId, WebSocket webSocket)
         {
-            ConnectionSocketList.Add(regisData);
+            var newConnectionData = new ConnectionSocketDataModel
+            {
+                ChannelSlugUrl = channelSlugUrl,
+                ConnectionId = connectionId,
+                WebSocket = webSocket
+            };
+            ConnectionSocketList.Add(newConnectionData);
+            return newConnectionData;
         }
 
         protected static IEnumerable<ConnectionSocketDataModel> GetConnectionSocketList()

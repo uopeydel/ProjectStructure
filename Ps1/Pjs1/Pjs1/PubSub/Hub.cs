@@ -8,6 +8,7 @@ namespace Pjs1.Main.PubSub
     public class Hub : IDisposable
     {
         public Hub() { }
+        public HubContext Context { get; set; }
         public void Dispose() { }
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public virtual async Task OnConnectedAsync() { }

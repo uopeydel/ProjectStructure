@@ -39,7 +39,7 @@
         <div>
             <label for="sendMessage">Message to send:</label>
             <input id="sendMessage" disabled />
-            <input id="sendMessageToIdButton" placeholder="IdReceived" />  <button id="sendToIdButton" type="submit"  >sendToId </button>
+            <input id="sendMessageToIdButton" placeholder="IdReceived" />  <button id="sendToIdButton" type="submit">sendToId </button>
             <button id="sendButton" type="submit" disabled>Send</button>
 
             <button id="sendButtonAsync" type="submit" disabled>Send Async</button>
@@ -171,10 +171,14 @@
             stateLabel.innerHTML = "Connecting";
             socket = new WebSocket(connectionUrl.value);
             socket.onopen = function (event) {
+                //console.log(event, "connectButton")
                 updateState();
                 commsLog.innerHTML += '<tr>' +
                     '<td colspan="3" class="commslog-data">Connection opened</td>' +
                     '</tr>';
+                //todo onconnectasync
+                var data = "{ MessageJson : [] , InvokeMethodName: 'OnConnectedAsync' , ConnectionId : ''  , ConnectionName : '" + 0 + "' }";
+                socket.send(data);
             };
             socket.onclose = function (event) {
                 updateState();
@@ -187,7 +191,7 @@
                 let result = JSON.parse(event.data);
                 console.log(result, "onmessage");
                 let showSubscriptMessage = result.MessageJson;
-                if (result.InvokeMethodName == "InitialConnection") {
+                if (result.InvokeMethodName == "OnConnectedAsync") {
                     connectionId = result.ConnectionId;
                 }
                 if (result.InvokeMethodName == "SendMessageToId") {

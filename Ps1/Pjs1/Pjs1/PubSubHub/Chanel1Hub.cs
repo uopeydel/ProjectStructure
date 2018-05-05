@@ -14,14 +14,43 @@ namespace Pjs1.Main.PubSubHub
         {
 
         }
+
+        //[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        //public string GetCurrentMethod()
+        //{
+        //    System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace();
+        //    System.Diagnostics.StackFrame sf = st.GetFrame(1);
+        //    return sf.GetMethod().Name;
+        //}
+
         public override async Task OnConnectedAsync()
+        {
+            //var methodName = new StackTrace().GetFrame(2).GetMethod().Name;
+            var methodName = nameof(this.OnConnectedAsync);
+            #region Reply Connecttion Id
+            var replyConnectionData = new ReceiveSocketDataModel
+            {
+                ConnectionId = Context.ConnectionId,
+                ConnectionName = "", //todo set
+                MessageJson = new[] { RegisWebSocketProcess.GetConnectionRegisListFromSlug(Context.ChannelSlugUrl) },
+                InvokeMethodName = methodName
+            };
+            await EchoProcess.SendToClientConnectionId(Context.ChannelSlugUrl, replyConnectionData);
+            #endregion 
+
+            //todo flush this to any client
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
 
         }
 
         public string Read(string text, long number)
         {
-            return $"Server read {text}  {number}.";
+
+            var response = $"Server read {text}  {number}  {Context?.ConnectionId}.";
+            return response;
         }
 
         public async Task<string> ReadAsync(string text, long number)
@@ -49,7 +78,7 @@ namespace Pjs1.Main.PubSubHub
                 InvokeMethodName = "SendMessageToId", //System.Reflection.MethodBase.GetCurrentMethod().Name
 
             };
-            await EchoProcess.SendToConnectionId(channelSlugUrl, data);
+            await EchoProcess.SendToClientConnectionId(channelSlugUrl, data);
         }
 
     }

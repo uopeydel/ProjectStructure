@@ -23,27 +23,23 @@ namespace Pjs1.Main.PubSub.Process
             //regis user subscript websocket  Connection
             var userConnectionData =
                 RegisWebSocketProcess.GetConnectionRegis(connectionId, channelSlugUrl)
-                ?? new ConnectionSocketDataModel
-                {
-                    ChannelSlugUrl = channelSlugUrl,
-                    ConnectionId = connectionId,
-                    WebSocket = webSocket
-                };
+                ??
+                RegisWebSocketProcess.RegisWebSocket(channelSlugUrl, connectionId, webSocket);
 
-            #region Reply Connecttion Id
-            var replyConnectionData = new ReceiveSocketDataModel
-            {
-                ConnectionId = userConnectionData.ConnectionId,
-                ConnectionName = "",
-                MessageJson = new[] { "connection", "successful" },
-                InvokeMethodName = "InitialConnection"
-            };
-            await SendToWebSocket(webSocket, replyConnectionData, CancellationToken.None);
-            #endregion
-            SetConnectionSocketList(userConnectionData);
+            ////#region Reply Connecttion Id
+            ////var replyConnectionData = new ReceiveSocketDataModel
+            ////{
+            ////    ConnectionId = userConnectionData.ConnectionId,
+            ////    ConnectionName = "",
+            ////    MessageJson = new[] { "connection", "successful" },
+            ////    InvokeMethodName = "InitialConnection"
+            ////};
+            ////await SendToWebSocket(webSocket, replyConnectionData, CancellationToken.None);
+            ////#endregion
+            ////SetConnectionSocketList(userConnectionData);
 
 
-            await FlushAllConnectionList(channelSlugUrl);
+            //await FlushAllConnectionList(channelSlugUrl);
 
             var buffer = new byte[1024 * 4];
             var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
@@ -63,7 +59,7 @@ namespace Pjs1.Main.PubSub.Process
                     //TODO : get this varaible [invokeResult] type  check before SendString()  // //  // Convert.ChangeType(mainValue, mainMethod.ReturnType) ;
                     if (invokeResult != null)
                     {
-                        var invokeResultString = invokeResult.ToString();
+                        var invokeResultString = invokeResult as string;
                         var replySubscriptData = new ReceiveSocketDataModel
                         {
                             ConnectionId = receiveDataModel.ConnectionId,
@@ -71,7 +67,7 @@ namespace Pjs1.Main.PubSub.Process
                             MessageJson = new[] { invokeResultString },
                             InvokeMethodName = receiveDataModel.InvokeMethodName
                         };
-                        await SendToWebSocket(webSocket, replySubscriptData, CancellationToken.None);
+                        await SendToClientWebSocket(webSocket, replySubscriptData, CancellationToken.None);
                     }
                     // --//
                     #endregion
@@ -82,13 +78,13 @@ namespace Pjs1.Main.PubSub.Process
             }
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             RegisWebSocketProcess.RemoveConnectionSocket(userConnectionData.ConnectionId, channelSlugUrl);
-            await FlushAllConnectionList(channelSlugUrl);
+            //await FlushAllConnectionList(channelSlugUrl);
         }
 
         private static async Task FlushAllConnectionList(string channelSlugUrl)
         {
             #region FlushAllConnectionList
-            var allConnectionList = RegisWebSocketProcess.GetConnectionSocketListFromSlug(channelSlugUrl);
+            var allConnectionList = RegisWebSocketProcess.GetConnectionRegisListFromSlug(channelSlugUrl);
             foreach (var connection in allConnectionList)
             {
                 var FlushAllConnectionList = new ReceiveSocketDataModel
@@ -98,11 +94,11 @@ namespace Pjs1.Main.PubSub.Process
                     MessageJson = new[] { JsonConvert.SerializeObject(allConnectionList.Select(s => s.ConnectionId)) },
                     InvokeMethodName = "FlushAllConnectionList"
                 };
-                await SendToWebSocket(connection.WebSocket, FlushAllConnectionList, CancellationToken.None);
+                await SendToClientWebSocket(connection.WebSocket, FlushAllConnectionList, CancellationToken.None);
             }
             #endregion
         }
-        private static Task SendToWebSocket(WebSocket ws, ReceiveSocketDataModel data, CancellationToken cancellation)
+        private static Task SendToClientWebSocket(WebSocket ws, ReceiveSocketDataModel data, CancellationToken cancellation)
         {
             var dataJson = JsonConvert.SerializeObject(data);
             var encoded = Encoding.UTF8.GetBytes(dataJson);
@@ -110,7 +106,7 @@ namespace Pjs1.Main.PubSub.Process
             return ws.SendAsync(buffer, WebSocketMessageType.Text, true, cancellation);
         }
 
-        public static Task SendToConnectionId(string channelSlugUrl, ReceiveSocketDataModel receivedData, CancellationToken? cancellation = null)
+        public static Task SendToClientConnectionId(string channelSlugUrl, ReceiveSocketDataModel receivedData, CancellationToken? cancellation = null)
         {
             var dataJson = JsonConvert.SerializeObject(receivedData);
             var tarGetConnectionId = RegisWebSocketProcess.GetConnectionRegis(receivedData.ConnectionId, channelSlugUrl);
@@ -135,9 +131,19 @@ namespace Pjs1.Main.PubSub.Process
                     var channel = GetChannelList().Where(w => w.ChannelSlugUrl == userConnectionData.ChannelSlugUrl).FirstOrDefault();
 
                     var mainTypeData = Type.GetType(channel.ChannelClassFullName);
+
                     var mainParamConstructor = SummonParameter(mainTypeData);
                     var mainConstructor = mainTypeData.GetConstructors().FirstOrDefault();
                     var mainConstructorDeclare = mainConstructor.Invoke(mainParamConstructor);
+
+                    #region SetPropertieValueAfterNewInstance
+                    var hubContext = mainTypeData.GetProperty(nameof(Hub.Context));
+
+                    var hubContextInstance = Activator.CreateInstance(hubContext.PropertyType, userConnectionData.ConnectionId, userConnectionData.ChannelSlugUrl);
+                    //mainConstructorDeclare is same a class varaible new instance
+                    hubContext.SetValue(mainConstructorDeclare, hubContextInstance as HubContext);
+                    #endregion
+
                     var mainMethod = mainTypeData.GetMethod(receiveDataModel.InvokeMethodName);
 
                     var IsNotReturn = (mainMethod.ReturnType == typeof(void) || mainMethod.ReturnType == typeof(Task));
