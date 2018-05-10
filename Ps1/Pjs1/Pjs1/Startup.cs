@@ -14,6 +14,7 @@ using Pjs1.Main.Services;
 using Pjs1.Common.DAL;
 using Pjs1.Main.PubSub;
 using Pjs1.Main.PubSubHub;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Pjs1.Main
 {
@@ -47,22 +48,46 @@ namespace Pjs1.Main
 
             services.AddIoc(Configuration, _env);
             services.AddMvc();
+            #region Swagger
+            services.AddSwaggerGen(config =>
+            {
+                config.SwaggerDoc("v1", new Info { Title = "ProjectStructure API", Version = "v1" });
+            });
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseBrowserLink();
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+                //app.UseExceptionHandler("/Error");
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                //for error  404
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+                //for error another code
+                app.UseExceptionHandler("/Error");
             }
+            app.UseMvc();
 
+            #region Swagger
+            //https://localhost:44372/swagger/#!/swagger/v1/swagger.json
+            app.UseSwagger();
+            app.UseSwaggerUI(config =>
+            {
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Structure API V1");
+            });
+            #endregion
+
+
+            app.UseCors("AllowAll");
 
 
 
@@ -73,7 +98,7 @@ namespace Pjs1.Main
             //    KeepAliveInterval = TimeSpan.FromSeconds(120),
             //    ReceiveBufferSize = 4 * 1024
             //};
-             
+
             app.UseWebSockets(/*webSocketOptions*/);
             #endregion
             #region UsePubSubProvider
@@ -86,7 +111,7 @@ namespace Pjs1.Main
             }
             catch (Exception e)
             {
-                var a = e;  
+                var a = e;
             }
             #endregion
 
