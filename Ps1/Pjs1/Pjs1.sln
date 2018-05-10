@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pjs1.Main", "Pjs1\Pjs1.Main
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pjs1.Common", "Pjs1.Common\Pjs1.Common.csproj", "{4F81C80E-BB01-4CDE-B455-553B9DD81483}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pjs1.BLL", "Pjs1.BLL\Pjs1.BLL.csproj", "{D59B5904-2215-41E3-BB14-82062B45B26E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pjs1.BLL", "Pjs1.BLL\Pjs1.BLL.csproj", "{D59B5904-2215-41E3-BB14-82062B45B26E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pjs1.DAL.PostgreSQL", "Pjs1.DAL.PostgreSQL\Pjs1.DAL.PostgreSQL.csproj", "{93301BB7-1365-411C-BFC4-00DB96A4BCF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pjs1.DAL", "Pjs1.DAL\Pjs1.DAL.csproj", "{A40D9A23-FF25-4F26-A877-068358BF205E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{D59B5904-2215-41E3-BB14-82062B45B26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D59B5904-2215-41E3-BB14-82062B45B26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D59B5904-2215-41E3-BB14-82062B45B26E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93301BB7-1365-411C-BFC4-00DB96A4BCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93301BB7-1365-411C-BFC4-00DB96A4BCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93301BB7-1365-411C-BFC4-00DB96A4BCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93301BB7-1365-411C-BFC4-00DB96A4BCF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A40D9A23-FF25-4F26-A877-068358BF205E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A40D9A23-FF25-4F26-A877-068358BF205E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A40D9A23-FF25-4F26-A877-068358BF205E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A40D9A23-FF25-4F26-A877-068358BF205E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 using Pjs1.BLL.Interfaces;
 using Pjs1.Common.DAL;
 using Pjs1.Common.DAL.Models;
-using Pjs1.DAL.PostgreSQL.Interfaces;
+using Pjs1.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;

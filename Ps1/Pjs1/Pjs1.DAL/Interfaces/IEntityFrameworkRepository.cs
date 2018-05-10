@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Pjs1.DAL.PostgreSQL.Interfaces
+namespace Pjs1.DAL.Interfaces
 {
     public interface IEntityFrameworkRepository<T, TContext> where T : class where TContext : DbContext
     {

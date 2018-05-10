@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Pjs1.DAL.PostgreSQL.Interfaces;
+using Pjs1.DAL.Interfaces;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Pjs1.DAL.PostgreSQL.Implementations
+namespace Pjs1.DAL.Implementations
 {
     public class EntityFrameworkRepository<T, TContext> : IEntityFrameworkRepository<T, TContext> where T : class where TContext : DbContext
     {

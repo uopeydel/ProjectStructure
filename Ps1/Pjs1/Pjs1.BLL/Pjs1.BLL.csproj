@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pjs1.Common\Pjs1.Common.csproj" />
-    <ProjectReference Include="..\Pjs1.DAL.PostgreSQL\Pjs1.DAL.PostgreSQL.csproj" />
+    <ProjectReference Include="..\Pjs1.DAL\Pjs1.DAL.csproj" />
   </ItemGroup>
 
 </Project>
