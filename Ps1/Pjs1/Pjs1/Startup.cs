@@ -65,6 +65,8 @@ namespace Pjs1.Main
             app.UseBrowserLink();
             if (env.IsDevelopment())
             {
+                app.UseTrapMiddleware();
+
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");

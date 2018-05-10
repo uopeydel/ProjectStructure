@@ -25,4 +25,10 @@
     <ProjectReference Include="..\Pjs1.DAL.PostgreSQL\Pjs1.DAL.PostgreSQL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Home\ErrorStatusCode.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>
