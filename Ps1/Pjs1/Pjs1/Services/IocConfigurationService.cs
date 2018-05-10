@@ -6,6 +6,7 @@ using Pjs1.BLL.Implementations;
 using Pjs1.BLL.Interfaces;
 using Pjs1.DAL.PostgreSQL.Implementations;
 using Pjs1.DAL.PostgreSQL.Interfaces;
+using Pjs1.Main.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace Pjs1.Main.Services
             #region Singleton
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<UrlRedirectRule>();
 
             #endregion
 

@@ -15,6 +15,8 @@ using Pjs1.Common.DAL;
 using Pjs1.Main.PubSub;
 using Pjs1.Main.PubSubHub;
 using Swashbuckle.AspNetCore.Swagger;
+using Pjs1.Main.Routing;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Pjs1.Main
 {
@@ -115,10 +117,10 @@ namespace Pjs1.Main
             }
             #endregion
 
-
-
-
-
+            var options = new RewriteOptions();
+            var redirectionRule = app.ApplicationServices.GetService<UrlRedirectRule>();
+            options.Add(redirectionRule);
+            app.UseRewriter(options);
 
 
 
