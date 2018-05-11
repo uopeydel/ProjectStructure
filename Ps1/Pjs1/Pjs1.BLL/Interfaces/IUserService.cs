@@ -9,6 +9,8 @@ namespace Pjs1.BLL.Interfaces
     public interface IUserService
     {
         Task<User> AddUser(User user);
+        Task<User> UpdateUserSomeProperties(User user);
+        Task<User> UpdateUserSomePropertiesWork(User user);
         Task<List<User>> GetUserAll();
     }
 }

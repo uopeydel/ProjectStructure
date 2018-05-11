@@ -124,7 +124,19 @@ namespace Pjs1.DAL.Implementations
             DbContext.Entry(entity).State = EntityState.Modified;
         }
 
-
+        public void UpdateSpecficProperty<TProperty>(T entity, params Expression<Func<T, TProperty>>[] properties)
+        {
+            if (properties != null && properties.Length > 0)
+            {
+                DbContext.Attach(entity);
+                foreach (var prop in properties)
+                {
+                    DbContext.Entry(entity).Property(prop).IsModified = true;
+                }
+                return;
+            }
+            DbContext.Entry(entity).State = EntityState.Modified;
+        }
 
         public int SaveChanges()
         {

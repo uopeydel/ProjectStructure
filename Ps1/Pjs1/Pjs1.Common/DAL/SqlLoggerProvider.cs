@@ -33,11 +33,11 @@ namespace Pjs1.Common.DAL
             {
                 if (eventId.Id == 20101 || exception != null)
                 {
-                    Debug.WriteLine(" #!*====*!#  #!*====*!# ");
-                    Debug.WriteLine(" #!*====*!#  #!*====*!# ");
+                    Debug.WriteLine(" #!*====*!# start #!*====*!# ");
+                    Debug.WriteLine("   ");
                     Debug.WriteLine(formatter(state, exception));
-                    Debug.WriteLine(" #!*====*!#  #!*====*!# ");
-                    Debug.WriteLine(" #!*====*!#  #!*====*!# ");
+                    Debug.WriteLine("   ");
+                    Debug.WriteLine(" #!*====*!# end #!*====*!# ");
                 }
             }
 

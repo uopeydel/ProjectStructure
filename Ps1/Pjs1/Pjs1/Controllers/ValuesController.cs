@@ -32,5 +32,19 @@ namespace Pjs1.Main.Controllers
             return Ok(simple);
         }
 
+        [HttpGet("UpdateSomePropNotWork")]
+        public async Task<IActionResult> UpdateSomeProp()
+        { 
+            var simple = await _userServ.UpdateUserSomeProperties(null);
+            return Ok(simple);
+        }
+
+        [HttpGet("UpdateSomePropWork")]
+        public async Task<IActionResult> UpdateSomePropWork()
+        {
+            var simple = await _userServ.UpdateUserSomePropertiesWork(null);
+            return Ok(simple);
+        }
+
     }
 }

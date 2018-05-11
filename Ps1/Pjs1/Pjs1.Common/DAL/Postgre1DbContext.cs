@@ -35,16 +35,16 @@ namespace Pjs1.Common.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (optionsBuilder.IsConfigured) return;
-
 
 #if DEBUG
             var logEntitySql = new LoggerFactory();
             logEntitySql.AddProvider(new SqlLoggerProvider());
             optionsBuilder.UseLoggerFactory(logEntitySql).UseNpgsql(_connectionString);
 #else
+            if (optionsBuilder.IsConfigured) return;
             optionsBuilder.UseNpgsql(_pgsql);
 #endif
+
         }
     }
 }

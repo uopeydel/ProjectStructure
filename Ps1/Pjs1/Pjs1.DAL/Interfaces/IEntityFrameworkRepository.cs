@@ -23,6 +23,7 @@ namespace Pjs1.DAL.Interfaces
         void Delete(T entity);
         void Delete(List<T> entity);
         void Update(T entity);
+        void UpdateSpecficProperty<TProperty>(T entity, params Expression<Func<T, TProperty>>[] properties);
         Task<int> CountAsync();
         int SaveChanges();
 
