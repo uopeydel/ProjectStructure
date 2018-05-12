@@ -128,6 +128,7 @@ namespace Pjs1.DAL.Implementations
         {
             if (properties != null && properties.Length > 0)
             {
+                DbContext.Entry(entity).State = EntityState.Detached;
                 DbContext.Attach(entity);
                 foreach (var prop in properties)
                 {
@@ -136,6 +137,7 @@ namespace Pjs1.DAL.Implementations
                 return;
             }
             DbContext.Entry(entity).State = EntityState.Modified;
+
         }
 
         public int SaveChanges()

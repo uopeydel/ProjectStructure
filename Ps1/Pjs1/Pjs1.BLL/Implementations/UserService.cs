@@ -13,8 +13,8 @@ namespace Pjs1.BLL.Implementations
 {
     public class UserService : IUserService
     {
-        private readonly IEntityFrameworkRepository<User, Postgre1DbContext> _userRepository;
-        public UserService(IEntityFrameworkRepository<User, Postgre1DbContext> userRepository)
+        private readonly IEntityFrameworkRepository<User, MsSql1DbContext> _userRepository;
+        public UserService(IEntityFrameworkRepository<User, MsSql1DbContext> userRepository)
         {
             _userRepository = userRepository;
         }
@@ -33,7 +33,7 @@ namespace Pjs1.BLL.Implementations
         }
 
         public async Task<User> UpdateUserSomeProperties(User user)
-        { 
+        {
             user = new User
             {
                 Email = "test1@email.com",
@@ -48,18 +48,16 @@ namespace Pjs1.BLL.Implementations
                 _userRepository.UpdateSpecficProperty(user, new Expression<Func<User, object>>[] { });
                 _userRepository.SaveChanges();
             });
-            var usr1 = await _userRepository.GetAll(g => g.UserId == 1).FirstOrDefaultAsync();
 
+            var usr1 = await _userRepository.GetAll(g => g.UserId == 1).FirstOrDefaultAsync();
             await Task.Run(() =>
             {
-                var userUpdateNew = new User
-                {
-                    FirstName = "first",
-                    LastName = "last",
-                    Email = "xxx",
-                    UserName = "xxx",
-                };
-                _userRepository.UpdateSpecficProperty(userUpdateNew, o => o.LastName, o => o.FirstName);
+                usr1.FirstName = "first";
+                usr1.LastName = "last";
+                usr1.Email = "xxx";
+                usr1.UserName = "xxx";
+
+                _userRepository.UpdateSpecficProperty(usr1, o => o.LastName, o => o.FirstName);
                 _userRepository.SaveChanges();
             });
             var usr2 = await _userRepository.GetAll(g => g.UserId == 1).FirstOrDefaultAsync();

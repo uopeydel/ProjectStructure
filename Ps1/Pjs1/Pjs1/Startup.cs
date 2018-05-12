@@ -43,9 +43,14 @@ namespace Pjs1.Main
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddDbContext<Postgre1DbContext>(options =>
+            services.AddDbContext<Postgre1DbContext>((sp, options) =>
                 // This line for UseNpgsql add Can add migration
-                options.UseNpgsql(Configuration.GetConnectionString("Db1Connection"))
+                options.UseNpgsql(Configuration.GetConnectionString("Db1ConnectionNpgsql"))
+            );
+
+            services.AddDbContext<MsSql1DbContext>((sp, options) =>
+                // This line for UseSqlServer add Can add migration
+                options.UseSqlServer(Configuration.GetConnectionString("Db1ConnectionMsSql")) 
             );
 
             services.AddIoc(Configuration, _env);

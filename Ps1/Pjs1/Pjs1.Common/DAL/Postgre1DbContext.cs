@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 // Add-Migration CreateMigrationDatabasePostgre1 -Context Postgre1DbContext
 // Update-Database CreateMigrationDatabasePostgre1 -Context Postgre1DbContext
 // # NOTE
@@ -26,12 +25,15 @@ namespace Pjs1.Common.DAL
         public Postgre1DbContext(DbContextOptions<Postgre1DbContext> options)
             : base(options)
         {
-            //_connectionString = options.FindExtension<SqlServerOptionsExtension>().ConnectionString;
             _connectionString = options.FindExtension<NpgsqlOptionsExtension>().ConnectionString;
         }
 
         //TODO add DbSet<OtherTable> here
-        public DbSet<User> User { get; set; }
+        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Contact> Contact { get; set; }
+        public virtual DbSet<Conversation> Conversation { get; set; }
+        public virtual DbSet<Interlocutor> Interlocutor { get; set; }
+        public virtual DbSet<Logs> Logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
