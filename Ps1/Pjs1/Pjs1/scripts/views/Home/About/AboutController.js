@@ -1,5 +1,5 @@
 ﻿var app = angular.module("projectStructure", []);
-app.controller("ContactController", ['$scope', '$http', function ($scope, $http) {
+app.controller("AboutController", ['$scope', '$http', function ($scope, $http) {
 
     $scope.depts = "depts test 1234 ";
 
