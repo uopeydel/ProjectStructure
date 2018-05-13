@@ -129,9 +129,8 @@ namespace Pjs1.Main
             options.Add(redirectionRule);
             app.UseRewriter(options);
 
-
-
-
+             
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseAuthentication();

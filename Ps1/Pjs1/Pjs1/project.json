@@ -1,0 +1,8 @@
+﻿{
+  "tools": {
+    "BundlerMinifier.Core": "2.2.281"
+  },
+  "scripts": {
+    "precompile": [ "dotnet bundle" ]
+  }
+}

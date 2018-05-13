@@ -20,5 +20,17 @@
     },
     // Optionally generate .map file
     "sourceMap": false
+  },
+
+  {
+    "outputFileName": "wwwroot/js/views/Home/Contact/ContactController.min.js",
+    "inputFiles": [
+      "scripts/views/Home/Contact/ContactController.js"
+    ], 
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }, 
+    "sourceMap": false
   }
 ]
