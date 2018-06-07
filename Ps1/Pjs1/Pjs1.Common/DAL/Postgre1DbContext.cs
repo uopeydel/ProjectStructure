@@ -28,7 +28,7 @@ namespace Pjs1.Common.DAL
             _connectionString = options.FindExtension<NpgsqlOptionsExtension>().ConnectionString;
         }
 
-        //TODO add DbSet<OtherTable> here
+        // Add DbSet<OtherTable> here
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<Conversation> Conversation { get; set; }

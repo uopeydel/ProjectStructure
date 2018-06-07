@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Pjs1.Common.Enums;
 
 namespace Pjs1.Common.DAL.Models
 {
@@ -12,5 +13,6 @@ namespace Pjs1.Common.DAL.Models
         [Required] [StringLength(20)] public string UserName { get; set; }
         [Required] [StringLength(200)] public string FirstName { get; set; }
         [Required] [StringLength(200)] public string LastName { get; set; }
+        public UserOnlineStatus OnlineStatus { get; set; }
     }
 }

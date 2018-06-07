@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 
 // Add-Migration CreateMigrationDatabaseMsSql1 -Context MsSql1DbContext
-// Update-Database CreateMigrationDatabaseMsSql1 -Context MsSql1DbContext
+// Update-Database CreateMigrationDatabaseMsSql1 -Context MsSql1DbContext -Verbose
 // # NOTE
 // < CreateMigrationDatabaseMsSql1 > It's mean store in custom directory name
 // < MsSql1DbContext > It's mean use this file target by class name
@@ -28,7 +28,7 @@ namespace Pjs1.Common.DAL
             _connectionString = options.FindExtension<SqlServerOptionsExtension>().ConnectionString;
         }
 
-        //TODO add DbSet<OtherTable> here
+        // Add DbSet<OtherTable> here
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<Conversation> Conversation { get; set; }

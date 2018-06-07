@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Pjs1.BLL.Interfaces;
 using Pjs1.Common.DAL.Models;
+using Pjs1.Common.Enums;
 
 namespace Pjs1.Main.Controllers
 {
@@ -25,7 +26,8 @@ namespace Pjs1.Main.Controllers
                 Email = "test@test.com",
                 FirstName = "testFirstName",
                 LastName = "testLastName",
-                UserName = "test"
+                UserName = "test",
+                OnlineStatus = UserOnlineStatus.Online
             });
 
             var simple = await _userServ.GetUserAll();
@@ -50,6 +52,13 @@ namespace Pjs1.Main.Controllers
         public async Task<IActionResult> UpdateSomePropWork()
         {
             var simple = await _userServ.UpdateUserSomePropertiesWork(null);
+            return Ok(simple);
+        }
+
+        [HttpGet("UpdateOnlineStatus")]
+        public async Task<IActionResult> UpdateOnlineStatus(UserOnlineStatus onlneStatus)
+        {
+            var simple = await _userServ.UpdateOnlineStatus(onlneStatus);
             return Ok(simple);
         }
 

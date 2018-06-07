@@ -12,9 +12,10 @@ using System;
 namespace Pjs1.Common.Migrations.MsSql1Db
 {
     [DbContext(typeof(MsSql1DbContext))]
-    partial class MsSql1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20180606031922_CreateMigrationDatabaseMsSql2")]
+    partial class CreateMigrationDatabaseMsSql2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

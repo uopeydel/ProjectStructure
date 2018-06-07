@@ -2,6 +2,7 @@
 using Pjs1.BLL.Interfaces;
 using Pjs1.Common.DAL;
 using Pjs1.Common.DAL.Models;
+using Pjs1.Common.Enums;
 using Pjs1.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,23 @@ namespace Pjs1.BLL.Implementations
         {
             var usr = await _userRepository.GetAll().ToListAsync();
             return usr;
+        }
+
+        public async Task<User> UpdateOnlineStatus(UserOnlineStatus onlneStatus)
+        {
+            await Task.Run(() =>
+            {
+                _userRepository
+                .UpdateSpecficProperty(
+
+                 new User { UserId = 1, OnlineStatus = onlneStatus },
+
+                  o => o.OnlineStatus 
+                        );
+                _userRepository.SaveChanges();
+            });
+            var usr = await _userRepository.GetAll(a => a.UserId == 1 , false).FirstAsync();
+            return usr; 
         }
 
         public async Task<User> UpdateUserSomeProperties(User user)
@@ -79,7 +97,7 @@ namespace Pjs1.BLL.Implementations
             }
             await Task.Run(() =>
             {
-                _userRepository.UpdateSpecficProperty(user, o => o.LastName, o => o.FirstName);
+                _userRepository.UpdateSpecficProperty(user, o => o.LastName, o => o.FirstName  );
                 _userRepository.SaveChanges();
             });
             var usrResult = await _userRepository.GetAll(g => g.UserId == 1).FirstOrDefaultAsync();
