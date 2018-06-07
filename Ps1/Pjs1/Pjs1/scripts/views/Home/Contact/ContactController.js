@@ -14,4 +14,10 @@ app.controller("ContactController", ['$scope', '$http', function ($scope, $http)
         });
     }
 
+    $scope.ShowModal = function () {
+        console.log("xxx");
+        $('#myModal').modal('show');
+        console.log("wxxx");
+    }
+
 }]);

@@ -25,14 +25,15 @@ namespace Pjs1.Main.PubSubHub
 
         public override async Task OnConnectedAsync()
         {
+            //todo ss
             //var methodName = new StackTrace().GetFrame(2).GetMethod().Name;
-            var methodName = nameof(this.OnConnectedAsync);
+            const string methodName = nameof(this.OnConnectedAsync);
             #region Reply Connecttion Id
             var replyConnectionData = new ReceiveSocketDataModel
             {
                 ConnectionId = Context.ConnectionId,
                 ConnectionName = "", //todo set
-                MessageJson = new[] { RegisWebSocketProcess.GetConnectionRegisListFromSlug(Context.ChannelSlugUrl) },
+                MessageJson = new object[] { RegisWebSocketProcess.GetConnectionRegisListFromSlug(Context.ChannelSlugUrl) },
                 InvokeMethodName = methodName
             };
             await EchoProcess.SendToClientConnectionId(Context.ChannelSlugUrl, replyConnectionData);

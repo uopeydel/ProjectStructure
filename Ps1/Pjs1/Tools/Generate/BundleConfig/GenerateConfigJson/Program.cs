@@ -35,7 +35,7 @@ namespace GenerateConfigJson
             title += "// Instal this for auto bundle and minify  https://marketplace.visualstudio.com/items?itemName=MadsKristensen.BundlerMinifier \n";
             title += "// right-click the file  bundleconfig.json  and select enable bundle on build";
 
-            //Todo find the way close console app
+            //run at debugmode it will close console app when exit
             Environment.Exit(0);
         }
 
