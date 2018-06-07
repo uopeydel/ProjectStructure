@@ -50,6 +50,23 @@ namespace Pjs1.BLL.Implementations
             return usr; 
         }
 
+        public async Task<User> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus ,string lastName)
+        {
+            await Task.Run(() =>
+            {
+                _userRepository
+                    .UpdateSpecficPropertyMultiType( 
+
+                        new User { UserId = 1, OnlineStatus = onlneStatus ,LastName = lastName },
+
+                        o => o.OnlineStatus ,o => o.LastName
+                    );
+                _userRepository.SaveChanges();
+            });
+            var usr = await _userRepository.GetAll(a => a.UserId == 1, false).FirstAsync();
+            return usr;
+        }
+
         public async Task<User> UpdateUserSomeProperties(User user)
         {
             user = new User

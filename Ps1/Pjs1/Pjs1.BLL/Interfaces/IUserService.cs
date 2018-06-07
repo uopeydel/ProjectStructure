@@ -16,5 +16,6 @@ namespace Pjs1.BLL.Interfaces
 
 
         Task<User> UpdateOnlineStatus(UserOnlineStatus onlneStatus);
+        Task<User> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus, string lastName);
     }
 }

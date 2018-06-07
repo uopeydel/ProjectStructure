@@ -140,6 +140,22 @@ namespace Pjs1.DAL.Implementations
 
         }
 
+        public void UpdateSpecficPropertyMultiType(T entity, params Expression<Func<T, object>>[] properties)
+        {
+            if (properties != null && properties.Length > 0)
+            {
+                DbContext.Entry(entity).State = EntityState.Detached;
+                DbContext.Attach(entity);
+                foreach (var prop in properties)
+                {
+                    DbContext.Entry(entity).Property(prop).IsModified = true;
+                }
+                return;
+            }
+            DbContext.Entry(entity).State = EntityState.Modified;
+
+        }
+
         public int SaveChanges()
         {
             return DbContext.SaveChanges();

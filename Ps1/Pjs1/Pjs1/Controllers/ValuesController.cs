@@ -36,14 +36,14 @@ namespace Pjs1.Main.Controllers
 
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser()
-        { 
+        {
             var simple = await _userServ.GetUserAll();
             return Ok(simple);
         }
 
         [HttpGet("UpdateSomePropNotWork")]
         public async Task<IActionResult> UpdateSomeProp()
-        { 
+        {
             var simple = await _userServ.UpdateUserSomeProperties(null);
             return Ok(simple);
         }
@@ -59,6 +59,13 @@ namespace Pjs1.Main.Controllers
         public async Task<IActionResult> UpdateOnlineStatus(UserOnlineStatus onlneStatus)
         {
             var simple = await _userServ.UpdateOnlineStatus(onlneStatus);
+            return Ok(simple);
+        }
+
+        [HttpGet("UpdateOnlineStatusMultiType")]
+        public async Task<IActionResult> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus, string lastName)
+        {
+            var simple = await _userServ.UpdateOnlineStatusMultiType(onlneStatus, lastName);
             return Ok(simple);
         }
 
