@@ -3,5 +3,10 @@
 }
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
-
+<H1>IS NOT.</H1>
 <p>Use this area to provide additional information.</p>
+@if(!User.Identity.IsAuthenticated) 
+{
+    <H1>IS LOGIN.</H1>
+
+}

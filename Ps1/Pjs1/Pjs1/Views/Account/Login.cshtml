@@ -2,8 +2,9 @@
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Http.Authentication
+@using Pjs1.Common.GenericDbContext
 @model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<GenericUser> SignInManager
 
 @{
     ViewData["Title"] = "Log in";

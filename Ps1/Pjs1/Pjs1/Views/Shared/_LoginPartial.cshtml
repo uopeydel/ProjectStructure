@@ -1,8 +1,9 @@
 @using Microsoft.AspNetCore.Identity
+@using Pjs1.Common.GenericDbContext
 @using Pjs1.Main.Models
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<GenericUser> SignInManager
+@inject UserManager<GenericUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {

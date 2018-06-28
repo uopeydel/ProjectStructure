@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Pjs1.Common.GenericDbContext;
 
 namespace Pjs1.Main.Services
 {
@@ -38,8 +40,12 @@ namespace Pjs1.Main.Services
 
             #region Scoped
 
+          
             services.AddScoped(typeof(IEntityFrameworkRepository<,>), typeof(EntityFrameworkRepository<,>));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITestGenericIdentityService, TestGenericIdentityService>();
+
+           
 
             #endregion
 

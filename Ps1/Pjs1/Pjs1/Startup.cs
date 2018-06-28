@@ -17,6 +17,8 @@ using Pjs1.Main.PubSubHub;
 using Swashbuckle.AspNetCore.Swagger;
 using Pjs1.Main.Routing;
 using Microsoft.AspNetCore.Rewrite;
+using Pjs1.Common.GenericDbContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Pjs1.Main
 {
@@ -34,8 +36,11 @@ namespace Pjs1.Main
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Multi Db Context 
+
             // Add-Migration CreateMigrationAgentAuth -Context ApplicationDbContext
             // Update-Database CreateMigrationAgentAuth -Context ApplicationDbContext
+            /*
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AuthConnection")));
 
@@ -52,6 +57,22 @@ namespace Pjs1.Main
                 // This line for UseSqlServer add Can add migration
                 options.UseSqlServer(Configuration.GetConnectionString("Db1ConnectionMsSql")) 
             );
+            */
+            #endregion
+
+            #region Db1AllMsSql
+
+            // Add-Migration CreateMigrationMsSqlGenericDb -Context MsSqlGenericDb
+            // Update-Database CreateMigrationMsSqlGenericDb -Context MsSqlGenericDb
+
+            services.AddDbContext<MsSqlGenericDb>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("Db1AllMsSql")));
+
+            services.AddIdentity<GenericUser, GenericRole>()
+                .AddEntityFrameworkStores<MsSqlGenericDb>()
+                .AddDefaultTokenProviders();
+
+            #endregion
 
             services.AddIoc(Configuration, _env);
             services.AddMvc();
@@ -65,16 +86,21 @@ namespace Pjs1.Main
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env )
         {
+             
             app.UseBrowserLink();
             if (env.IsDevelopment())
             {
                 app.UseTrapMiddleware();
+                
+                //todo implement UseTrapWrapperMiddleware
+                //app.UseTrapWrapperMiddleware() ;
 
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
                 //app.UseExceptionHandler("/Error");
             }
             else
@@ -129,7 +155,7 @@ namespace Pjs1.Main
             options.Add(redirectionRule);
             app.UseRewriter(options);
 
-             
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -142,5 +168,7 @@ namespace Pjs1.Main
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+
     }
 }

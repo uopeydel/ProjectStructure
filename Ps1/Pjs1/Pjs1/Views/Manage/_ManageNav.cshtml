@@ -1,5 +1,7 @@
-﻿@using PPjs1.MainViews.Manage
-@inject SignInManager<ApplicationUser> SignInManager
+﻿@using Pjs1.Common.GenericDbContext
+@using Pjs1.Main.Views.Manage
+@*@using PPjs1.MainViews.Manage*@
+@inject SignInManager<GenericUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
