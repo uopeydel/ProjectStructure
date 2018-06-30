@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.Extensions.Logging;
 using Pjs1.Common.DAL;
+using Pjs1.Common.DAL.Models;
 
 namespace Pjs1.Common.GenericDbContext
 {
-    public partial class MsSqlGenericDb : IdentityDbContext<GenericUser, GenericRole, int, GenericUserClaim , GenericUserRole , GenericUserLogin, GenericRoleClaim, GenericUserToken>
+    public partial class MsSqlGenericDb : IdentityDbContext<GenericUser, GenericRole, int, GenericUserClaim, GenericUserRole, GenericUserLogin, GenericRoleClaim, GenericUserToken>
     {
         private readonly string _connectionString;
         public MsSqlGenericDb(DbContextOptions<MsSqlGenericDb> options) : base(options)
@@ -27,45 +28,69 @@ namespace Pjs1.Common.GenericDbContext
         public virtual DbSet<GenericRoleClaim> RoleClaim { get; set; }
         public virtual DbSet<GenericUserToken> UserToken { get; set; }
 
+        public virtual DbSet<Contact> Contact { get; set; }
+        public virtual DbSet<Conversation> Conversation { get; set; }
+        public virtual DbSet<Interlocutor> Interlocutor { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
 
-            //builder.Entity<GenericUser>()
-            //    .HasOne(u => u.UserRoles) 
-            //    .WithMany(u => u.)
-            //    .Map(m =>
-            //    {
-            //        m.ToTable("UserRole");
-            //        m.MapLeftKey("UserId");
-            //        m.MapRightKey("RoleId");
-            //    });
+            #region MapManyToMany Contact
 
 
+            builder.Entity<Contact>(entity =>
+            {
+                entity
+                    .HasOne(d => d.ContactReceiver)
+                    .WithMany(p => p.ContactReceiver)
+                    .HasForeignKey(d => d.ContactReceiverId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
-            //builder.Entity<GenericUser>(entity =>
-            //{
-            //    entity
-            //        .HasOne(d => d.UserRole)
-            //        .WithMany(p => p.Users)
-            //        .HasForeignKey(d => d.Id)
-            //        .OnDelete(DeleteBehavior.ClientSetNull); 
-            //});
+                entity
+                    .HasOne(d => d.ContactSender)
+                    .WithMany(p => p.ContactSender)
+                    .HasForeignKey(d => d.ContactSenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            #endregion
+
+            #region MapManyToMany Conversation
+
+            builder.Entity<Conversation>(entity =>
+            {
+                entity
+                    .HasOne(ho => ho.ConversationReceiver)
+                    .WithMany(wm => wm.ConversationReceiver)
+                    .HasForeignKey(hfk => hfk.ConversationReceiverId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity
+                    .HasOne(ho => ho.ConversationSender)
+                    .WithMany(wm => wm.ConversationSender)
+                    .HasForeignKey(hfk => hfk.ConversationSenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+            });
 
 
-            //builder.Entity<GenericUserRole>(entity =>
-            //{
-            //    entity
-            //        .HasMany(d => d.Roles)
-            //        .WithOne(p => p.UserRole)
-            //        .HasForeignKey(d => d.Id)
-            //        .OnDelete(DeleteBehavior.ClientSetNull);
-                 
-            //});
+            #endregion
+
+            #region OneToOne 
+
+            builder.Entity<GenericUser>()
+                .HasOne(ho => ho.Interlocutor)
+                .WithOne(wo => wo.User)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Interlocutor>()
+                .HasOne(ho => ho.User)
+                .WithOne(wo => wo.Interlocutor)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            #endregion
+
         }
 
 
@@ -83,5 +108,5 @@ namespace Pjs1.Common.GenericDbContext
 
         }
     }
-  
+
 }

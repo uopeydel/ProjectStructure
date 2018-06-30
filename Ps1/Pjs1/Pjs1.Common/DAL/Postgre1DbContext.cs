@@ -29,7 +29,7 @@ namespace Pjs1.Common.DAL
         }
 
         // Add DbSet<OtherTable> here
-        public virtual DbSet<User> User { get; set; }
+        //public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<Conversation> Conversation { get; set; }
         public virtual DbSet<Interlocutor> Interlocutor { get; set; }

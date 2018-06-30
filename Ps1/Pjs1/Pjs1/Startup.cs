@@ -19,6 +19,7 @@ using Pjs1.Main.Routing;
 using Microsoft.AspNetCore.Rewrite;
 using Pjs1.Common.GenericDbContext;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Pjs1.Main
 {
@@ -61,6 +62,7 @@ namespace Pjs1.Main
             #endregion
 
             #region Db1AllMsSql
+            // Change project to Pjs1.Common
 
             // Add-Migration CreateMigrationMsSqlGenericDb -Context MsSqlGenericDb
             // Update-Database CreateMigrationMsSqlGenericDb -Context MsSqlGenericDb
@@ -75,7 +77,11 @@ namespace Pjs1.Main
             #endregion
 
             services.AddIoc(Configuration, _env);
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options =>
+            {
+                options.SerializerSettings.Formatting = Formatting.Indented;
+            });
             #region Swagger
             services.AddSwaggerGen(config =>
             {

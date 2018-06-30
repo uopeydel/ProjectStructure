@@ -40,12 +40,12 @@ namespace Pjs1.Main.Services
 
             #region Scoped
 
-          
+
             services.AddScoped(typeof(IEntityFrameworkRepository<,>), typeof(EntityFrameworkRepository<,>));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITestGenericIdentityService, TestGenericIdentityService>();
+            services.AddScoped<IChatService, ChatService>();
 
-           
 
             #endregion
 

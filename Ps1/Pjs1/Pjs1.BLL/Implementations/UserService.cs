@@ -42,24 +42,24 @@ namespace Pjs1.BLL.Implementations
 
                  new User { UserId = 1, OnlineStatus = onlneStatus },
 
-                  o => o.OnlineStatus 
+                  o => o.OnlineStatus
                         );
                 _userRepository.SaveChanges();
             });
-            var usr = await _userRepository.GetAll(a => a.UserId == 1 , false).FirstAsync();
-            return usr; 
+            var usr = await _userRepository.GetAll(a => a.UserId == 1, false).FirstAsync();
+            return usr;
         }
 
-        public async Task<User> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus ,string lastName)
+        public async Task<User> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus, string lastName)
         {
             await Task.Run(() =>
             {
                 _userRepository
-                    .UpdateSpecficPropertyMultiType( 
+                    .UpdateSpecficPropertyMultiType(
 
-                        new User { UserId = 1, OnlineStatus = onlneStatus ,LastName = lastName },
+                        new User { UserId = 1, OnlineStatus = onlneStatus, LastName = lastName },
 
-                        o => o.OnlineStatus ,o => o.LastName
+                        o => o.OnlineStatus, o => o.LastName
                     );
                 _userRepository.SaveChanges();
             });
@@ -114,7 +114,7 @@ namespace Pjs1.BLL.Implementations
             }
             await Task.Run(() =>
             {
-                _userRepository.UpdateSpecficProperty(user, o => o.LastName, o => o.FirstName  );
+                _userRepository.UpdateSpecficProperty(user, o => o.LastName, o => o.FirstName);
                 _userRepository.SaveChanges();
             });
             var usrResult = await _userRepository.GetAll(g => g.UserId == 1).FirstOrDefaultAsync();

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pjs1.Common.DAL.Models
 {
+    //การสนทนา
     public partial class Conversation
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,7 +14,7 @@ namespace Pjs1.Common.DAL.Models
 
         public string Message { get; set; }
         public DateTimeOffset SendTime { get; set; }
-        public int MessageDataType { get; set; }
+        public MessageDataType MessageDataType { get; set; }
 
 
 
@@ -22,5 +23,26 @@ namespace Pjs1.Common.DAL.Models
 
         public int ConversationSenderId { get; set; }
         public Interlocutor ConversationSender { get; set; }
+    }
+
+    public enum MessageDataType
+    {
+        None = 0,
+        Text = 1,
+        Image = 2,
+        Video = 3,
+        Audio = 4,
+        Url = 5,
+        File = 6,
+        Sticker
+    }
+
+    public enum ConversationStatus
+    {
+        None = 0,
+        Unread = 1,
+        Readed = 2,
+        Deleted = 3
+
     }
 }

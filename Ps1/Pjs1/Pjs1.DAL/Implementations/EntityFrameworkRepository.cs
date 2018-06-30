@@ -44,7 +44,7 @@ namespace Pjs1.DAL.Implementations
         {
             if (tracking)
             {
-                return DbContext.Set<T>().AsQueryable();
+                return DbContext.Set<T>().AsQueryable() ;
             }
             else
             {

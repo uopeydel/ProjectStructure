@@ -49,19 +49,19 @@ namespace Pjs1.BLL.Implementations
         public async Task<GenericUser> TestUser(GenericUser user)
         {
             var passWord = "12345678Aa!";
-            //var usr = await _userManager.CreateAsync(user, passWord);
+            var usr = await _userManager.CreateAsync(user, passWord);
 
-            //var result = await _userRepository.GetAll(g => g.UserName == user.UserName).FirstOrDefaultAsync();
-            //var canSignInAsync = await _signInManager.CanSignInAsync(user);
-            //var singinpasswprd = await _signInManager.PasswordSignInAsync(user, passWord, false, false);
-            //var tokenConfirmEmail = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            //var confirmemailResult = await _userManager.ConfirmEmailAsync(user, tokenConfirmEmail);
-            //var singinpasswprd2 = await _signInManager.PasswordSignInAsync(user, passWord, false, false);
+            var result = await _userRepository.GetAll(g => g.UserName == user.UserName).FirstOrDefaultAsync();
+            var canSignInAsync = await _signInManager.CanSignInAsync(user);
+            var singinpasswprd = await _signInManager.PasswordSignInAsync(user, passWord, false, false);
+            var tokenConfirmEmail = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmemailResult = await _userManager.ConfirmEmailAsync(user, tokenConfirmEmail);
+            var singinpasswprd2 = await _signInManager.PasswordSignInAsync(user, passWord, false, false);
 
-            //var genericRole = new GenericRole { Name = "TestR", IsActive = true };
-            //var resultRoleManager = await _roleManager.CreateAsync(genericRole);
-            //var resultRole = await _roleRepository.GetAll(g => g.Name.Equals(genericRole.Name)).FirstOrDefaultAsync();
-            ////await _userRoleRepository.AddAsync(new GenericUserRole { UserId = result.Id, RoleId = resultRole.Id });
+            var genericRole = new GenericRole { Name = "TestR", IsActive = true };
+            var resultRoleManager = await _roleManager.CreateAsync(genericRole);
+            var resultRole = await _roleRepository.GetAll(g => g.Name.Equals(genericRole.Name)).FirstOrDefaultAsync();
+            //await _userRoleRepository.AddAsync(new GenericUserRole { UserId = result.Id, RoleId = resultRole.Id });
 
             var resultAgain = await _userManager.FindByIdAsync("2");
 
