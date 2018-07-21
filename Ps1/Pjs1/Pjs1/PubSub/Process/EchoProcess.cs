@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Pjs1.Main.PubSub.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -10,6 +11,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Pjs1.Common.DAL.Models;
+using Pjs1.Common.GenericDbContext;
+using Pjs1.DAL.Implementations;
+using Pjs1.DAL.Interfaces;
 
 namespace Pjs1.Main.PubSub.Process
 {
@@ -204,9 +210,28 @@ namespace Pjs1.Main.PubSub.Process
                     var paramType = param.ParameterType;
                     if (paramType.IsInterface)
                     {
+                        var implName = paramType.Name.Substring(1);
+                        var implNamespace = paramType.Namespace.Split('.').LastOrDefault();
                         var implClassList = AppDomain.CurrentDomain.GetAssemblies()
                            .SelectMany(s => s.GetTypes())
-                           .Where(w => paramType.IsAssignableFrom(w) & !w.IsInterface).ToList();
+                           .Where(w =>
+                                (
+                                    paramType.IsAssignableFrom(w)
+                                ||
+                                    (
+                                     w.Name.Equals(implName)
+                                     ||
+                                     (
+                                      !string.IsNullOrEmpty(w.Namespace)
+                                      &&
+                                      w.Namespace.Contains(implNamespace)
+                                     )
+                                    )
+                                )
+                                &&
+                                !w.IsInterface
+                                )
+                            .ToList();
                         if (implClassList.Count > 1)
                         {
                             //TODO: Make is Support in future
@@ -217,11 +242,18 @@ namespace Pjs1.Main.PubSub.Process
 
                         var parameteDatar = SummonParameter(implClass);
 
+                        #region generic
+                        if (implClass.IsGenericType || implClass.IsGenericTypeDefinition)
+                        {
+                            implClass = implClass.MakeGenericType(typeof(Contact), typeof(MsSqlGenericDb));
+                        }
+                        #endregion
+
                         var instanceOfImplement = (parameteDatar == null || parameteDatar.Length == 0)
-                            ?
-                            Activator.CreateInstance(implClass)
-                            :
-                            Activator.CreateInstance(implClass, parameteDatar);
+                             ?
+                             Activator.CreateInstance(implClass)
+                             :
+                             Activator.CreateInstance(implClass, parameteDatar);
 
                         result.Add(instanceOfImplement);
                     }
@@ -236,6 +268,7 @@ namespace Pjs1.Main.PubSub.Process
                 }
                 return result.ToArray();
             }
+
 
         }
 

@@ -44,6 +44,8 @@
 
             <button id="sendButtonAsync" type="submit" disabled>Send Async</button>
             <button id="closeButton" disabled>Close Socket</button>
+            
+            <button id="GetInterlocutorWithContact"> GetInterlocutorWithContact </button>
         </div>
 
         <h2>Communication Log</h2>
@@ -74,6 +76,7 @@
         var commsLog = document.getElementById("commsLog");
         var connectionList = document.getElementById("connectionList");
         var closeButton = document.getElementById("closeButton");
+        var GetInterlocutorWithContact = document.getElementById("GetInterlocutorWithContact");
         var socket;
         var scheme = document.location.protocol == "https:" ? "wss" : "ws";
         var port = document.location.port ? (":" + document.location.port) : "";
@@ -155,6 +158,15 @@
                 '<td class="commslog-server">Server</td>' +
                 '<td class="commslog-data">' + sendMessage.value + '</td></tr>';
         }
+
+        GetInterlocutorWithContact.onclick = function () {
+            console.log("xxxclickS")
+            var InterlocutorId = 1;
+            var data = "{ MessageJson : [ '" + InterlocutorId+"' ] , InvokeMethodName: 'GetInterlocutorWithContact' , ConnectionId : '" +
+                connectionId + "'  , ConnectionName : '" + 0 + "' }";
+            socket.send(data);
+        }
+
         sendButtonAsync.onclick = function () {
             if (!socket || socket.readyState != WebSocket.OPEN) {
                 alert("socket not connected");

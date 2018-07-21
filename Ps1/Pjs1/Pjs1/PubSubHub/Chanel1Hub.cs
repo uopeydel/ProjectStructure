@@ -5,15 +5,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Pjs1.BLL.Interfaces;
+using Pjs1.Common.Models;
+using Pjs1.Main.Service.Interface;
 
 namespace Pjs1.Main.PubSubHub
 {
     public class Chanel1Hub : Hub
     {
-        public Chanel1Hub()
+        private readonly IProjectHelper _projectHelper;
+        public Chanel1Hub(IProjectHelper projectHelper)
         {
-
+            _projectHelper = projectHelper;
         }
+
+
 
         //[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
         //public string GetCurrentMethod()
@@ -77,6 +84,26 @@ namespace Pjs1.Main.PubSubHub
                 ConnectionId = connectionId,
                 MessageJson = new[] { text },
                 InvokeMethodName = "SendMessageToId", //System.Reflection.MethodBase.GetCurrentMethod().Name
+
+            };
+            await EchoProcess.SendToClientConnectionId(channelSlugUrl, data);
+        }
+
+        public async Task GetInterlocutorWithContact(string interlocutorIdText, string channelSlugUrl, string connectionId)
+        {
+            var isInt = int.TryParse(interlocutorIdText, out int interlocutorId);
+            InterlocutorModel interlocutorWithContact = new InterlocutorModel();
+            if (isInt)
+            {
+                //interlocutorWithContact = await _chatService.GetInterlocutorWithContact(interlocutorId);
+            }
+
+            
+            var data = new ReceiveSocketDataModel
+            {
+                ConnectionId = connectionId,
+                MessageJson = new[] { JsonConvert.SerializeObject(interlocutorWithContact) },
+                InvokeMethodName = "GetInterlocutorWithContact", //System.Reflection.MethodBase.GetCurrentMethod().Name
 
             };
             await EchoProcess.SendToClientConnectionId(channelSlugUrl, data);

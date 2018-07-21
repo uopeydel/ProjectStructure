@@ -48,8 +48,12 @@ namespace Pjs1.BLL.Implementations
         {
             try
             {
+                var contacs = await _contactRepository
+                    .GetAll(g => g.ContactReceiverId == interlocutorId || g.ContactSenderId == interlocutorId)
+                    .ToListAsync();
+                     
                 var result = await _interlocutorRepository
-                    .GetAll(g => g.InterlocutorId == interlocutorId) 
+                    .GetAll(g => g.InterlocutorId == interlocutorId)
                     .Select(s => new InterlocutorModel
                     {
                         InterlocutorType = s.InterlocutorType,
@@ -57,17 +61,17 @@ namespace Pjs1.BLL.Implementations
                         DisplayName = s.DisplayName,
                         ProfileImageUrl = s.ProfileImageUrl,
                         StatusUnderName = s.StatusUnderName,
-                        TimeZone = s.TimeZone,
-                       // Contacts = s.Contacts.Where(w => w.ContactReceiverId == interlocutorId || w.se)
+                        TimeZone = s.TimeZone, 
                     })
-                    .FirstOrDefaultAsync() ;
+                    .FirstOrDefaultAsync();
+                result.Contacts = contacs;
                 return result;
             }
             catch (Exception e)
-            { 
+            {
                 throw e;
             }
-          
+
         }
 
     }
