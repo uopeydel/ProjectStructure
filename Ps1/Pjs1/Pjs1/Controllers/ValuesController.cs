@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Pjs1.BLL.Interfaces;
 using Pjs1.Common.DAL.Models;
 using Pjs1.Common.Enums;
+using Pjs1.Common.GenericDbContext;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pjs1.Main.Controllers
 {
@@ -17,11 +18,17 @@ namespace Pjs1.Main.Controllers
         {
             _userServ = userServ;
         }
+        [HttpGet("test")]
+        public async Task<IActionResult> tests() {
+            await _userServ.TestGenericEf();
+            return Ok( );
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            await _userServ.AddUser(new User
+            var re = await _userServ.AddUser(new GenericUser
             {
                 Email = "test@test.com",
                 FirstName = "testFirstName",
@@ -69,5 +76,12 @@ namespace Pjs1.Main.Controllers
             return Ok(simple);
         }
 
+
+        [HttpGet("ReturnError")]
+        public async Task<IActionResult> ReturnError()
+        {
+
+            return Ok();
+        }
     }
 }

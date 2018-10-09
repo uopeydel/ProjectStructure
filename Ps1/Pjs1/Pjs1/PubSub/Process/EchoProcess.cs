@@ -16,6 +16,7 @@ using Pjs1.Common.DAL.Models;
 using Pjs1.Common.GenericDbContext;
 using Pjs1.DAL.Implementations;
 using Pjs1.DAL.Interfaces;
+using System.Reflection.Emit;
 
 namespace Pjs1.Main.PubSub.Process
 {
@@ -188,9 +189,27 @@ namespace Pjs1.Main.PubSub.Process
                     return e;
                 }
             }
+            private static IEnumerable<MethodInfo> GetAllInterfaceMethods(Type interfaceType)
+            {
+                var aInf = interfaceType.GetInterfaces();
+                foreach (var parent in aInf)
+                {
+                    foreach (var parentMethod in GetAllInterfaceMethods(parent))
+                    {
+                        yield return parentMethod;
+                    }
+                }
+
+                var aMth = interfaceType.GetMethods();
+                foreach (var method in aMth)
+                {
+                    yield return method;
+                }
+            }
 
             private static object[] SummonParameter(Type classTypeData)
             {
+
                 if (classTypeData == null)
                 {
                     return null;
@@ -208,8 +227,19 @@ namespace Pjs1.Main.PubSub.Process
                 foreach (var param in parametersInConstructor)
                 {
                     var paramType = param.ParameterType;
+
+                    //foreach (var method in GetAllInterfaceMethods(paramType))
+                    //{
+
+                    //}
+
                     if (paramType.IsInterface)
                     {
+
+
+
+
+
                         var implName = paramType.Name.Substring(1);
                         var implNamespace = paramType.Namespace.Split('.').LastOrDefault();
                         var implClassList = AppDomain.CurrentDomain.GetAssemblies()
@@ -240,11 +270,50 @@ namespace Pjs1.Main.PubSub.Process
                         }
                         var implClass = implClassList.FirstOrDefault();
 
+                        var assemblyName = new AssemblyName(paramType.Namespace);
+                        var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+                        var moduleBuilder = assemblyBuilder.DefineDynamicModule(paramType.Namespace);
+
+                        var type = moduleBuilder.DefineType(
+                               implClass.FullName,
+                               TypeAttributes.Public,
+                               typeof(Object),
+                               new[] { paramType });
+                        var method = type.DefineMethod(".ctor", System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.HideBySig);
+                        foreach (var meInfo in paramType.GetMethods())
+                        {
+                            var methodAttributes =
+                                  MethodAttributes.Public
+                                | MethodAttributes.Virtual
+                                | MethodAttributes.Final
+                                | MethodAttributes.HideBySig
+                                | MethodAttributes.NewSlot;
+
+                            var parameters = meInfo.GetParameters();
+                            var paramTypes = parameters.Select(p => p.ParameterType).ToArray();
+
+                            var methodBuilder = type.DefineMethod(meInfo.Name, methodAttributes);
+                             
+                            methodBuilder.SetReturnType(meInfo.ReturnType);
+                            methodBuilder.SetParameters(paramTypes);
+
+                            // Sets the number of generic type parameters
+                            var genericTypeNames =
+                                paramTypes.Where(p => p.IsGenericParameter).Select(p => p.Name).Distinct().ToArray();
+
+                            if (genericTypeNames.Any())
+                            {
+                                methodBuilder.DefineGenericParameters(genericTypeNames);
+                            }
+                        }
+
+
                         var parameteDatar = SummonParameter(implClass);
 
                         #region generic
                         if (implClass.IsGenericType || implClass.IsGenericTypeDefinition)
                         {
+
                             implClass = implClass.MakeGenericType(typeof(Contact), typeof(MsSqlGenericDb));
                         }
                         #endregion

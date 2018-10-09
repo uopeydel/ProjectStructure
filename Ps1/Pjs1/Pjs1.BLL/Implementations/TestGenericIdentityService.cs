@@ -1,22 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Extensions.Internal;
 using Pjs1.BLL.Interfaces;
 using Pjs1.Common.DAL;
 using Pjs1.Common.DAL.Models;
 using Pjs1.Common.Enums;
+using Pjs1.Common.GenericDbContext;
 using Pjs1.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Pjs1.Common.GenericDbContext;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Extensions.Internal;
-using System.Linq;
 
 namespace Pjs1.BLL.Implementations
 {
+
     public class TestGenericIdentityService : ITestGenericIdentityService
     {
         private readonly IEntityFrameworkRepository<GenericUser, MsSqlGenericDb> _userRepository;
@@ -27,7 +28,7 @@ namespace Pjs1.BLL.Implementations
         private readonly SignInManager<GenericUser> _signInManager;
 
         private readonly RoleManager<GenericRole> _roleManager;
-        
+
 
         public TestGenericIdentityService(
             IEntityFrameworkRepository<GenericUser, MsSqlGenericDb> userRepository,
@@ -66,11 +67,10 @@ namespace Pjs1.BLL.Implementations
             var resultAgain = await _userManager.FindByIdAsync("2");
 
             //_roleManager.Roles.Where(w => w.)
-            var s = await _userManager.AddToRolesAsync(resultAgain, new[] {"TestR"});
+            var s = await _userManager.AddToRolesAsync(resultAgain, new[] { "TestR" });
             var roles = await _userManager.GetRolesAsync(resultAgain);
             var users = await _userManager.GetUsersInRoleAsync("TestR");
             return user;
         }
-
     }
 }

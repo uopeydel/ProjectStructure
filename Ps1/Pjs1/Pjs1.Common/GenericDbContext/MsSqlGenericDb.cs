@@ -4,17 +4,20 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Pjs1.Common.DAL;
 using Pjs1.Common.DAL.Models;
 
 namespace Pjs1.Common.GenericDbContext
 {
-    public partial class MsSqlGenericDb : IdentityDbContext<GenericUser, GenericRole, int, GenericUserClaim, GenericUserRole, GenericUserLogin, GenericRoleClaim, GenericUserToken>
+    public interface IMsSqlGenericDb { }
+    public partial class MsSqlGenericDb : IdentityDbContext<GenericUser, GenericRole, int, GenericUserClaim, GenericUserRole, GenericUserLogin, GenericRoleClaim, GenericUserToken> , IMsSqlGenericDb
     {
         private readonly string _connectionString;
-        public MsSqlGenericDb(DbContextOptions<MsSqlGenericDb> options) : base(options)
+        public MsSqlGenericDb(IServiceProvider serviceProvider/*,DbContextOptions<MsSqlGenericDb> options*/)  
         {
+            var options = serviceProvider.GetRequiredService<DbContextOptions<MsSqlGenericDb>>();
             _connectionString = options.FindExtension<SqlServerOptionsExtension>().ConnectionString;
         }
 

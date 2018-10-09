@@ -4,18 +4,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Pjs1.Common.Enums;
+using Pjs1.Common.GenericDbContext;
 
 namespace Pjs1.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<User> AddUser(User user);
-        Task<User> UpdateUserSomeProperties(User user);
-        Task<User> UpdateUserSomePropertiesWork(User user);
-        Task<List<User>> GetUserAll();
+        Task TestGenericEf();
+        Task<GenericUser> AddUser(GenericUser user);
+        Task<GenericUser> UpdateUserSomeProperties(GenericUser user);
+        Task<GenericUser> UpdateUserSomePropertiesWork(GenericUser user);
+        Task<List<GenericUser>> GetUserAll();
 
 
-        Task<User> UpdateOnlineStatus(UserOnlineStatus onlneStatus);
-        Task<User> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus, string lastName);
+        Task<GenericUser> UpdateOnlineStatus(UserOnlineStatus onlneStatus);
+        Task<GenericUser> UpdateOnlineStatusMultiType(UserOnlineStatus onlneStatus, string lastName);
+
+        
     }
 }

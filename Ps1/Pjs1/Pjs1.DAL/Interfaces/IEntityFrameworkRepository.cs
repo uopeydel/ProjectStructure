@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Pjs1.Common.GenericDbContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ namespace Pjs1.DAL.Interfaces
 {
     public interface IEntityFrameworkRepository<T, TContext> where T : class where TContext : DbContext
     {
+        
         IQueryable<T> GetAll(bool tracking = true);
         IQueryable<T> GetAll(bool tracking = true, params Expression<Func<T, object>>[] includeProperties);
         IQueryable<T> GetAll(Expression<Func<T, bool>> predicate, bool tracking = true);

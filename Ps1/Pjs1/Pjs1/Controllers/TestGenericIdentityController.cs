@@ -21,7 +21,7 @@ namespace Pjs1.Main.Controllers
         // GET: api/TestGenericIdentity
         [HttpGet]
         public async Task<IActionResult> Get()
-        {
+        { 
             Random _r = new Random();
             var resultRandom = _r.Next(9005);
             var em = $"test{resultRandom}@email.com";

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pjs1.Main.Data;
+ 
 using Pjs1.Main.Models;
 using Pjs1.Main.Services;
 using Pjs1.Common.DAL;
@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Pjs1.Common.GenericDbContext;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Pjs1.Main.Helpers;
 
 namespace Pjs1.Main
 {
@@ -77,7 +78,10 @@ namespace Pjs1.Main
             #endregion
 
             services.AddIoc(Configuration, _env);
-            services.AddMvc()
+            services.AddMvc(options =>
+            {
+                options.Conventions.Add(new CommandParameterBindingConvention());
+            })
                 .AddJsonOptions(options =>
             {
                 options.SerializerSettings.Formatting = Formatting.Indented;
@@ -88,7 +92,7 @@ namespace Pjs1.Main
                 config.SwaggerDoc("v1", new Info { Title = "ProjectStructure API", Version = "v1" });
             });
             #endregion
-
+  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

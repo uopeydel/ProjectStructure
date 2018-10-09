@@ -17,6 +17,7 @@ namespace Pjs1.DAL.Implementations
         {
             _serviceProvider = serviceProvider;
             DbContext = GetConnection();
+             
         }
 
         private DbContext GetConnection()

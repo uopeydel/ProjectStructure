@@ -8,33 +8,40 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pjs1.BLL.Interfaces;
 using Pjs1.Common.Models;
-using Pjs1.Main.Service.Interface;
+using Pjs1.Common.GenericDbContext;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+ 
 
 namespace Pjs1.Main.PubSubHub
 {
     public class Chanel1Hub : Hub
     {
-        private readonly IProjectHelper _projectHelper;
-        public Chanel1Hub(IProjectHelper projectHelper)
+        
+        public Chanel1Hub(IUserService u )
         {
-            _projectHelper = projectHelper;
+             
         }
-
-
-
-        //[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-        //public string GetCurrentMethod()
-        //{
-        //    System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace();
-        //    System.Diagnostics.StackFrame sf = st.GetFrame(1);
-        //    return sf.GetMethod().Name;
-        //}
-
+         
         public override async Task OnConnectedAsync()
         {
-            //todo ss
-            //var methodName = new StackTrace().GetFrame(2).GetMethod().Name;
+           
             const string methodName = nameof(this.OnConnectedAsync);
+             
+            //var options = new DbContextOptions<MsSqlGenericDb>();
+            //try
+            //{
+            //    var coms = options.FindExtension<SqlServerOptionsExtension>().ConnectionString;
+            //}
+            //catch (Exception e)
+            //{
+
+            //}
+            //using (var db = new MsSqlGenericDb(options))
+            //{
+            //    var res = await db.Role.Where(w => w.Id > 0).FirstOrDefaultAsync();
+            //}
+
             #region Reply Connecttion Id
             var replyConnectionData = new ReceiveSocketDataModel
             {
@@ -51,7 +58,7 @@ namespace Pjs1.Main.PubSubHub
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-
+            
         }
 
         public string Read(string text, long number)
